@@ -4,22 +4,21 @@ const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
 } = {
-  navTheme: 'dark',
-  // 拂晓蓝
-  primaryColor: '#1890ff',
+  navTheme: 'light',
+  primaryColor: '#13C2C2',
   layout: 'side',
   contentWidth: 'Fluid',
-  fixedHeader: false,
+  fixedHeader: true,
   fixSiderbar: true,
   colorWeak: false,
-  title: '企业校园',
+  title: 'Ant Design Pro',
   pwa: false,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
   menu: {
-    locale: false
+    locale: false,
   },
-  headerHeight: 48
+  headerHeight: 48,
 };
 //导出配置
 export default Settings;
