@@ -1,0 +1,31 @@
+.rightBlock {
+  float: right;
+}
+.headerBody {
+  display: flex;
+  width: 100%;
+}
+.content {
+  display: table-cell;
+  vertical-align: middle;
+}
+.statisticItem {
+  display: inline-block;
+  padding: 0 20px;
+  text-align: center;
+  user-select: none;
+}
+.statisticItem .desc {
+  color: #909399;
+  font-size: 14px;
+}
+.statisticItem .number {
+  font-size: 20px;
+}
+.statisticItem.rightBorder {
+  border-right: 1px solid #e9e9e9;
+}
+.statisticItem.rightBorder:list-child {
+  padding-right: 0;
+  border-right: 0 solid #e9e9e9;
+}
