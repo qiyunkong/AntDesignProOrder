@@ -2,13 +2,29 @@
 
 1. 主题修改 官网链接[https://preview.pro.ant.design/]
 
-   > { "navTheme": "light", "primaryColor": "#13C2C2", "layout": "side", "contentWidth": "Fluid", "fixedHeader": false, "fixSiderbar": true, "title": "Ant Design Pro", "pwa": false, "iconfontUrl": "", "menu": { "locale": true }, "headerHeight": 48 }
+   > 配置
+   >
+   > ```json
+   > {
+   >   "navTheme": "light",
+   >   "primaryColor": "#13C2C2",
+   >   "layout": "side",
+   >   "contentWidth": "Fluid",
+   >   "fixedHeader": false,
+   >   "fixSiderbar": true,
+   >   "title": "Ant Design Pro",
+   >   "pwa": false,
+   >   "iconfontUrl": "",
+   >   "menu": { "locale": true },
+   >   "headerHeight": 48
+   > }
+   > ```
 
 2. 路由权限控制
 
 3. 异步组件
 
-4.
+4. 修改菜单图标 配置 logo 图标修改
 
 ## 项目结构
 

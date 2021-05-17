@@ -9,7 +9,6 @@ const waitTime = (time: number = 100) => {
   });
 };
 
-
 //
 async function getFakeCaptcha(req: Request, res: Response) {
   await waitTime(2000);
@@ -34,42 +33,106 @@ const getAccess = () => {
 const adminMenu = [
   {
     path: '/',
-    name: '后台首页',
-    icon: 'dashboard',
+    name: '系统首页',
+    icon: 'HomeOutlined',
   },
   {
-    path:'/list',
-    name:'管理端页面',
-    icon:'dashboard',
-  },
-  {
-    path:'/system',
-    name:'系统配置',
-    icon:'SettingFilled',
-    children:[
+    name: '业务管理',
+    icon: 'ShopOutlined',
+    children: [
       {
-        path:'/system/config',
-        name:'配置管理',
+        path: '/server/order',
+        name: '订单管理',
       },
       {
-        path:'/system/setting',
-        name:'系统配置',
-      }
-    ]
-    
-  }
-]
+        path: '/server/product',
+        name: '商品管理',
+      },
+      {
+        path: '/server/like',
+        name: '点赞管理',
+      },
+      {
+        path: '/server/equipment',
+        name: '设备管理',
+      },
+    ],
+  },
+  {
+    name: '组织架构',
+    icon: 'ApartmentOutlined',
+    children: [
+      {
+        path: '/organization/user',
+        name: '用户管理',
+      },
+      {
+        path: '/organization/category',
+        name: '分类管理',
+      },
+      {
+        path: '/organization/role',
+        name: '角色管理',
+      },
+      {
+        path: '/organization/tag',
+        name: '标签管理',
+      },
+    ],
+  },
+  {
+    name: '系统管理',
+    icon: 'SettingFilled',
+    children: [
+      {
+        path: '/system/setting',
+        name: '系统配置',
+      },
+      {
+        path: '/system/log',
+        name: '系统日志',
+      },
+      {
+        path: '/system/empower',
+        name: '授权配置',
+      },
+      {
+        path: '/system/menu',
+        name: '菜单配置',
+      },
+      {
+        path: '/system/notice',
+        name: '轮播配置',
+      },
+    ],
+  },
+  {
+    name: '数据统计',
+    icon: 'dashboard',
+    children: [
+      {
+        path: '/echarts/line',
+        name: '折线展示',
+      },
+      {
+        path: '/echarts/pie',
+        name: '饼形展示',
+      },
+      {
+        path: '/echarts/bar',
+        name: '柱形展示',
+      },
+    ],
+  },
+];
 //用户菜单
-
 const userMenu = [
   {
     path: '/',
     name: '后台首页',
     icon: 'dashboard',
   },
-]
-
-
+];
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
@@ -161,40 +224,39 @@ export default {
   ],
 
   //返回客户端:用户菜单
-  "POST /api/menuData": async (req: Request, res: Response) => {
+  'POST /api/menuData': async (req: Request, res: Response) => {
     const { access } = req.body;
-  
+
     await waitTime(2000);
-    if(access == "admin"){
-      console.log('admin',access)
-      res.send(adminMenu)
-      }else{
-       console.log('user',access)
-        res.send(userMenu);
+    if (access == 'admin') {
+      console.log('admin', access);
+      res.send(adminMenu);
+    } else {
+      console.log('user', access);
+      res.send(userMenu);
     }
-  
   },
 
   //返回客户端：总用户量
-  'GET /api/user/total': (req: Request, res: Response)=>{
+  'GET /api/user/total': (req: Request, res: Response) => {
     //res.send 不能传number字面量,会当http状态值
-    res.send("2544")
+    res.send('2544');
   },
 
   //返回客户端:激活用户
-  'GET /api/user/authorization/total': (req: Request, res: Response)=>{
-    res.send("1043")
+  'GET /api/user/authorization/total': (req: Request, res: Response) => {
+    res.send('1043');
   },
 
   //返回客户端：日访问量 /api/user/organization
-  'GET /api/user/organization': (req: Request, res: Response)=>{
-    res.send("1043") 
+  'GET /api/user/organization': (req: Request, res: Response) => {
+    res.send('1043');
   },
-  
+
   //
-  'GET /api/log/statistic/total':(req: Request, res: Response)=>{
-    console.log(req.query)
-    res.send("1368")
+  'GET /api/log/statistic/total': (req: Request, res: Response) => {
+    console.log(req.query);
+    res.send('1368');
   },
 
   //用户登录
