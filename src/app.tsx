@@ -6,12 +6,16 @@ import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import type { ResponseError } from 'umi-request';
-import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ant-design-pro/api';
- import { BookOutlined, LinkOutlined } from '@ant-design/icons';
+// import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ant-design-pro/api'; 
+import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ganfanhun'
+import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import fixMenuItemIcon from '@/utils/utils';
-import { App,AppSettings  } from './types'
-import { getAppSettings } from './services/app';
+// import { App,AppSettings  } from './types'
+// import { getAppSettings } from './services/app';
+
+
+
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -29,8 +33,6 @@ export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   menuData?: MenuDataItem[];
-  apps:App[];
-  appSettings:AppSettings;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
@@ -45,7 +47,7 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  const appSettings = await getAppSettings(); //获取配置
+  // const appSettings = await getAppSettings(); //获取配置
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo(); //获取当前用户
@@ -53,18 +55,12 @@ export async function getInitialState(): Promise<{
     return {
       fetchUserInfo,
       currentUser,
-      appSettings,
-      settings: {},
       menuData,
-      apps:[]
     };
   }
   return {
     fetchUserInfo,
-    appSettings,
-    settings: {},
     menuData: [],
-    apps:[]
   };
 }
 

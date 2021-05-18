@@ -32,7 +32,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.User, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.LoginResult>('/api/account/login/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,6 +49,10 @@ export async function getNotices(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+
+
+// CURD
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(

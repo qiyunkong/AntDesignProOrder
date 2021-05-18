@@ -20,17 +20,38 @@
    > }
    > ```
 
-2. 路由权限控制
+2. 路由权限控制，访问路由触发的函数，路由的全局对象 [https://beta-pro.ant.design/docs/authority-management-cn]
 
 3. 异步组件
 
 4. 修改菜单图标 配置 logo 图标修改
+
+5. 去国际化问题，关闭没有效果
+
+6. config/proxy.ts 进行代理，可以解决跨域问题
+
+7. 代码规范设计 
+
+   - post 参数命名为 body
+   - get  参数命名为  params
+
+8. 统一数据返回格式并使用TS接口声明一个基类
+
+9. 泛型的 复用性会大大提升，以及性能上的提升。
+
+10. less 样式设计 面向对象设计，增加复用新
 
 ## 项目结构
 
 ## 项目问题
 
 ## 项目页面
+
+## 项目参考
+
+官网：https://beta-pro.ant.design/
+
+个人张立志博客：https://www.yuque.com/aspirantzhang/antdprov5/
 
 ## 项目中的不解代码
 

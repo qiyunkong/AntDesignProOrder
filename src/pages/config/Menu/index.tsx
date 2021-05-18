@@ -4,11 +4,13 @@ import { DownOutlined, QuestionCircleOutlined, EllipsisOutlined } from '@ant-des
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 
+//tag 类型
 export type Status = {
   color: string;
   text: string;
 };
 
+//标签
 const statusMap = {
   0: {
     color: 'blue',
@@ -32,6 +34,7 @@ const statusMap = {
   },
 };
 
+//表格数据
 export type TableListItem = {
   key: number;
   name: string;
@@ -40,10 +43,14 @@ export type TableListItem = {
   status: Status;
   createdAt: number;
 };
+
+//声明一个数组
 const tableListDataSource: TableListItem[] = [];
 
+//声明一个名字数组
 const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
 
+//循环
 for (let i = 0; i < 5; i += 1) {
   tableListDataSource.push({
     key: i,
@@ -173,7 +180,7 @@ export default () => {
       expandable={{ expandedRowRender }}
       search={false}
       dateFormatter="string"
-      headerTitle="嵌套表格"
+      headerTitle="菜单配置"
       options={false}
       toolBarRender={() => [
         <Button key="show">查看日志</Button>,

@@ -3,6 +3,7 @@
 
 declare namespace API {
 
+  //当前用户
   type CurrentUser = {
     id:number,
     name?: string;
@@ -25,6 +26,7 @@ declare namespace API {
     phone?: string;
   };
 
+  //http路由状态
   type httpRule = {
     success?: boolean,
     data?: any,
@@ -35,12 +37,14 @@ declare namespace API {
     host?: string
   }
 
+  //登录返回的结果
   type LoginResult = {
-    status?: string;
+    status?: number;
     type?: string;
     currentAuthority?: string;
   };
 
+  //页面参数
   type PageParams = {
     current?: number;
     pageSize?: number;
@@ -73,13 +77,16 @@ declare namespace API {
     status?: string;
   };
 
+  //登录参数
   type LoginParams = {
     username?: string;
     password?: string;
+    email?:string;
     autoLogin?: boolean;
     type?: string;
   };
 
+  //错误
   type ErrorResponse = {
     /** 业务约定的错误码 */
     errorCode: string;

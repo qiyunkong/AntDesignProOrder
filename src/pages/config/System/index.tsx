@@ -2,8 +2,8 @@ import ProCard from '@ant-design/pro-card'
 import { PageHeaderWrapper } from '@ant-design/pro-layout' // 布局配置
 import {SettingOutlined,SaveOutlined} from '@ant-design/icons' //图标库
 import { Button, Form, Input, message, Select, Space} from 'antd'
-import React,{useEffect} from 'react'
-import {useModel} from 'umi'
+// import React,{useEffect} from 'react'
+// import {useModel} from 'umi'
 
 export default  function SystemSetting(){
     const [form] = Form.useForm()

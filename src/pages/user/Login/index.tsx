@@ -1,18 +1,16 @@
 import {
-  AlipayCircleOutlined,
   LockOutlined,
   MobileOutlined,
-  TaobaoCircleOutlined,
   UserOutlined,
-  WeiboCircleOutlined,
 } from '@ant-design/icons';
-import { Alert, Space, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi';
-import Footer from '@/components/Footer';
-import { login,fetchMenuData } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { Alert, Space, message, Tabs } from 'antd'
+import React, { useState } from 'react'
+import ProForm, { ProFormCaptcha, ProFormText } from '@ant-design/pro-form'
+import { useIntl, Link, history, FormattedMessage, SelectLang, useModel } from 'umi'
+import Footer from '@/components/Footer'
+import {login,fetchMenuData} from '@/services/ganfanhun'
+import { getFakeCaptcha } from '@/services/ant-design-pro/login'
+import {AccountLoginParameter,JSONResult,AccountLoginResult} from '@/types'
 
 import styles from './index.less';
 
@@ -40,8 +38,14 @@ const goto = () => {
 };
 
 const Login: React.FC = () => {
+
+  //hook 变量
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [userLoginState, setUserLoginState] = useState<JSONResult<AccountLoginResult>>({
+    code:0,
+    msg:"",
+    content:''
+  });
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
 
@@ -51,7 +55,8 @@ const Login: React.FC = () => {
     //拉取当前用户的信息
     const userInfo = await initialState?.fetchUserInfo?.();
     //拉取当前用户的菜单
-    const menuData = await fetchMenuData( userInfo);
+    const menuData = await fetchMenuData(userInfo);
+
     if (userInfo) {
       setInitialState({
         ...initialState,
@@ -61,25 +66,27 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
+  //确定登录
+  const handleSubmit = async (values: AccountLoginParameter) => {
     setSubmitting(true);
     try {
       // 登录
-      const msg = await login({ ...values ,type});
-      if (msg.status === 'ok') {
+      const Result = await login({ ...values ,type});
+      if (Result.msg === "success") {
         message.success('登录成功！');
         await fetchUserInfo();
         goto();
         return;
       }
       // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
+      setUserLoginState(Result);
     } catch (error) {
       message.error('登录失败，请重试！');
     }
     setSubmitting(false);
   };
-  const { status, type: loginType } = userLoginState;
+
+  const { msg } = userLoginState;
 
   return (
     <div className={styles.container}>
@@ -89,10 +96,10 @@ const Login: React.FC = () => {
           <div className={styles.header}>
             <Link to="/">
               <img alt="logo" className={styles.logo} src="/logo.svg" />
-              <span className={styles.title}>Ant Design</span>
+              <span className={styles.title}>江湖干饭庄-餐饮后台管理系统-V1</span>
             </Link>
           </div>
-          <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+          <div className={styles.desc}>终于等到了饭点,干饭人干饭时间,第一个冲向饭店,见饭不干不是人,干饱了才有精神</div>
         </div>
 
         <div className={styles.main}>
@@ -117,7 +124,7 @@ const Login: React.FC = () => {
               },
             }}
             onFinish={async (values) => {
-              handleSubmit(values as API.LoginParams);
+              handleSubmit(values as AccountLoginParameter);
             }}
           >
             <Tabs activeKey={type} onChange={setType}>
@@ -132,12 +139,12 @@ const Login: React.FC = () => {
                 key="mobile"
                 tab={intl.formatMessage({
                   id: 'pages.login.phoneLogin.tab',
-                  defaultMessage: '手机号登录',
+                  defaultMessage: '新用户注册',
                 })}
               />
             </Tabs>
 
-            {status === 'error' && loginType === 'account' && (
+            {msg === 'error'  && (
               <LoginMessage
                 content={intl.formatMessage({
                   id: 'pages.login.accountLogin.errorMessage',
@@ -148,7 +155,7 @@ const Login: React.FC = () => {
             {type === 'account' && (
               <>
                 <ProFormText
-                  name="username"
+                  name="email"
                   fieldProps={{
                     size: 'large',
                     prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -177,7 +184,7 @@ const Login: React.FC = () => {
                   }}
                   placeholder={intl.formatMessage({
                     id: 'pages.login.password.placeholder',
-                    defaultMessage: '密码: ant.design',
+                    defaultMessage: '密码: jsfei.cn',
                   })}
                   rules={[
                     {
@@ -194,7 +201,7 @@ const Login: React.FC = () => {
               </>
             )}
 
-            {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
+            {msg === 'error' && <LoginMessage content="验证码错误" />}
             {type === 'mobile' && (
               <>
                 <ProFormText
@@ -276,29 +283,7 @@ const Login: React.FC = () => {
                 />
               </>
             )}
-            <div
-              style={{
-                marginBottom: 24,
-              }}
-            >
-              <ProFormCheckbox noStyle name="autoLogin">
-                <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
-              </ProFormCheckbox>
-              <a
-                style={{
-                  float: 'right',
-                }}
-              >
-                <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
-              </a>
-            </div>
           </ProForm>
-          <Space className={styles.other}>
-            <FormattedMessage id="pages.login.loginWith" defaultMessage="其他登录方式" />
-            <AlipayCircleOutlined className={styles.icon} />
-            <TaobaoCircleOutlined className={styles.icon} />
-            <WeiboCircleOutlined className={styles.icon} />
-          </Space>
         </div>
       </div>
       <Footer />
