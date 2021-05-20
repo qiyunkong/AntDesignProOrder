@@ -3,9 +3,9 @@ export interface User{
     nickName:string,
     email:string,
     phome:string,
-    passowrd:string,
+    passowrd?:string,
     avatar?:string,
     createTime:string,
-    status:string,
+    status?:string,
     roleId?:string
 }

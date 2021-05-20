@@ -1,5 +1,5 @@
 import {request} from 'umi'
-import {CategoryListItem,PageList} from '../../types'
+import {CategoryListItem,JSONResult,PageList} from '../../types'
 
 /** 拉取分类列表的接口函数 GET /api/category */
 export async function getCategory(params:{
@@ -29,7 +29,7 @@ export async function putCategory(body:CategoryListItem, options?: { [key: strin
 
 /** 新建分类的接口函数 POST /api/category */
 export async function addCategory(body:CategoryListItem, options?: { [key: string]: any }){
-    return request<CategoryListItem>('/api/category',{
+    return request<JSONResult<CategoryListItem>>('/api/category',{
         method:'POST',
         data:body,
         ...(options || {}),
@@ -38,7 +38,6 @@ export async function addCategory(body:CategoryListItem, options?: { [key: strin
 
 /** 删除分类的接口函数 DELETE /api/category */
 export async function delCategory(params:{
-    id:number
 }, options?: { [key: string]: any }){
     return request('/api/category',{
         method:'DELETE',

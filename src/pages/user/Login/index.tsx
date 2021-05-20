@@ -11,6 +11,7 @@ import Footer from '@/components/Footer'
 import {login,fetchMenuData} from '@/services/ganfanhun'
 import { getFakeCaptcha } from '@/services/ant-design-pro/login'
 import {AccountLoginParameter,JSONResult,AccountLoginResult} from '@/types'
+import {setAuthority} from '@/utils/authority'
 
 import styles from './index.less';
 
@@ -41,7 +42,7 @@ const Login: React.FC = () => {
 
   //hook 变量
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<JSONResult<AccountLoginResult>>({
+  const [userLoginState, setUserLoginState] = useState<JSONResult<string>>({
     code:0,
     msg:"",
     content:''
@@ -74,6 +75,7 @@ const Login: React.FC = () => {
       const Result = await login({ ...values ,type});
       if (Result.msg === "success") {
         message.success('登录成功！');
+        setAuthority(Result.data)
         await fetchUserInfo();
         goto();
         return;

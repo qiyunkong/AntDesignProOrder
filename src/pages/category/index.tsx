@@ -11,18 +11,22 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
+import {addCategory,getCategory,delCategory} from '@/services/ganfanhun'
+import {CategoryListItem} from '@/types'
 
 /**
  * 添加节点
  *
  * @param fields
  */
-const handleAdd = async (fields: API.RuleListItem) => {
+const handleAdd = async (fields: CategoryListItem) => {
+
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    const result =  await addCategory({ ...fields });
     hide();
     message.success('添加成功');
+    console.log(result)
     return true;
   } catch (error) {
     hide();
@@ -60,12 +64,12 @@ const handleUpdate = async (fields: FormValueType) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+const handleRemove = async (selectedRows: CategoryListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
+    await delCategory({
+      id: selectedRows.map((row) => row._id),
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -86,22 +90,17 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<CategoryListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
 
   /** 国际化配置 */
   const intl = useIntl();
 
   /** 表格规格 */
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<CategoryListItem,"text">[] = [
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="规则名称"
-        />
-      ),
-      dataIndex: 'name',
+      title: '分类ID',
+      dataIndex: '_id',
       tip: '规则名称是唯一的 key',
       render: (dom, entity) => {
         return (
@@ -117,80 +116,40 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="描述" />,
+      title: "分类名称",
+      dataIndex: 'name',
+    },
+    {
+      title: "描述",
       dataIndex: 'desc',
+      copyable: true,
+      ellipsis: true,
+      tip: '标题过长会自动收缩',
       valueType: 'textarea',
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleCallNo" defaultMessage="服务调用次数" />,
-      dataIndex: 'callNo',
+      title: "创建时间",
       sorter: true,
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="状态" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="关闭" />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="运行中" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="已上线" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.abnormal" defaultMessage="异常" />
-          ),
-          status: 'Error',
-        },
-      },
-    },
-    {
-      title: (
-        <FormattedMessage id="pages.searchTable.titleUpdatedAt" defaultMessage="上次调度时间" />
-      ),
-      sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'createTime',
       valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: '请输入异常原因！',
-              })}
-            />
-          );
-        }
-        return defaultRender(item);
-      },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      title:"是否展示",
+      dataIndex:'status',
+      hideInForm:true,
+      valueEnum:{
+        0:{
+          text:"已关闭",
+          status:0,
+        },
+        1:{
+          text:"已开启",
+          status:1,
+        }
+      }
+    },
+    {
+      title: "操作",
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -201,24 +160,22 @@ const TableList: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="配置" />
+         配置
         </a>,
         <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          <FormattedMessage id="pages.searchTable.subscribeAlert" defaultMessage="订阅警报" />
+         订阅警报
         </a>,
       ],
     },
+
   ];
 
   return (
     <PageContainer>
-      <ProTable<API.RuleListItem, API.PageParams>
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: '查询表格',
-        })}
+      <ProTable<CategoryListItem, API.PageParams>
+        headerTitle='查询表格'
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="_id"
         search={{
           labelWidth: 120,
         }}
@@ -227,13 +184,14 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
+              //显示模块框
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
+            <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={rule}
+        request={getCategory}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -241,6 +199,8 @@ const TableList: React.FC = () => {
           },
         }}
       />
+
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -254,7 +214,7 @@ const TableList: React.FC = () => {
                   id="pages.searchTable.totalServiceCalls"
                   defaultMessage="服务调用次数总计"
                 />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
+                {selectedRowsState.reduce((pre, item) => pre + item.status!, 0)}{' '}
                 <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
               </span>
             </div>
@@ -274,16 +234,15 @@ const TableList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
+
+
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '新建规则',
-        })}
+        title="新建分类"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as API.RuleListItem);
+          const success = await handleAdd(value as CategoryListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -296,12 +255,7 @@ const TableList: React.FC = () => {
           rules={[
             {
               required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="规则名称为必填项"
-                />
-              ),
+              message:"分类名称为必填项",
             },
           ]}
           width="md"
@@ -309,6 +263,7 @@ const TableList: React.FC = () => {
         />
         <ProFormTextArea width="md" name="desc" />
       </ModalForm>
+      
       <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
@@ -351,6 +306,8 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
+    
+    
     </PageContainer>
   );
 };

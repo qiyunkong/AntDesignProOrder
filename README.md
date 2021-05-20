@@ -1,3 +1,5 @@
+# Ant Design Pro
+
 ## 项目需求
 
 1. 主题修改 官网链接[https://preview.pro.ant.design/]
@@ -28,30 +30,97 @@
 
 5. 去国际化问题，关闭没有效果
 
-6. config/proxy.ts 进行代理，可以解决跨域问题
+6. FormattedMessage 组件是国际化组件， useIntl 使用
 
-7. 代码规范设计 
+7. config/proxy.ts 进行代理，可以解决跨域问题
+
+8. 代码规范设计 
 
    - post 参数命名为 body
    - get  参数命名为  params
 
-8. 统一数据返回格式并使用TS接口声明一个基类
+9. 统一数据返回格式并使用TS接口声明一个基类
 
-9. 泛型的 复用性会大大提升，以及性能上的提升。
+10. 泛型的 复用性会大大提升，以及性能上的提升。
 
-10. less 样式设计 面向对象设计，增加复用新
+11. less 样式设计 面向对象设计，增加复用新
+
+12. 服务端修改页面logo，页面标题， icon
 
 ## 项目结构
 
 ## 项目问题
 
+1. git commit -m "备注" 提交失败，报错：git提交失败——running pre-commit hook: lint-staged <a href="https://blog.csdn.net/zhan_lang/article/details/88691279">解放方案</a>
+2. 
+
+
+
+## 笔记使用
+
+```
+[描述](http) == a标签
+```
+
 ## 项目页面
+
+1. 表格规格 表格组件的参数说明
+
+   ```js
+   const colums = {
+   	  title: '分类名称',  //表头名称
+         dataIndex: 'name', //绑定接口数据源键值
+         tip: '规则名称是唯一的 key', //提示语
+         render: (dom, entity) => {  //回调事件
+           return (
+             <a
+               onClick={() => {
+                 setCurrentRow(entity);
+                 setShowDetail(true);
+               }}
+             >
+               {dom}
+             </a>
+           );
+         },
+   }
+   ```
+
+2. 
 
 ## 项目参考
 
 官网：https://beta-pro.ant.design/
 
 个人张立志博客：https://www.yuque.com/aspirantzhang/antdprov5/
+
+芒旭项目：
+
+​	Router 使用	/hooks/useRouter 
+
+​    表格  pages/form/data/index.tsx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 项目中的不解代码
 
@@ -126,3 +195,202 @@ Popconfirm 气泡确认框 https://ant.design/components/popconfirm-cn/#header
 5.7
 
 Hook 下的文件夹组件的使用的方法 components 组件文件
+
+
+
+
+
+
+
+明台jquery
+
+```js
+/**
+	· 全局参数 pageData:{currentUser,settings,...query,...初始化数据,...formData}
+  · 全局参数 formHandler:FormInstance form表单的ref视图页面没有此属性
+  · 可用组件名称+Onload获取载入事件。例：function componentNameOnload(data){}
+*/
+
+/tak
+function Link(parameters){
+            const  {elementId,url} = parameters
+            this.obj =  document.getElementById(elementId);
+            this.init = function(){
+                this.initEvent();
+            }
+            this.initEvent = function(){
+                this.obj.onclick = function toURL(){
+                    if(url){
+                      console.log(url)
+                      history.pushState(null,null,url);
+                      history.pushState(null,null,url);
+                    }
+                     history.back();
+                }
+
+            }
+  }
+new Link({
+   elementId:"goback",
+   }).init();
+
+new Link({
+ elementId:"goadd",
+ url:"/pianoroom/form/?formId=510"
+ }).init();
+function goURL(url){
+    if(url){
+      console.log(url)
+      history.pushState(null,null,url);
+      history.pushState(null,null,url);
+    }
+     history.back();
+}
+```
+
+home
+
+```js
+// init()
+//  function init(){
+//     new linkBox("#linkBox_1").init();
+//     new linkBox("#linkBox_2").init();  
+//  }
+//  function linkBox(boxId){
+//     this.boxObj = $(boxId);
+//     var  itemObj = this.boxObj.children().eq(1)
+//      // router.loadPage('/form',{formId:'aaa'})
+//     this.init = function(){
+//         headEvent()
+//     }
+//     function headEvent(){
+//         itemObj.children().click(toURL)
+//     }
+ //    function toURL(){
+ //      	if($(this).data('url')!= ""){
+ //          	router.loadPage($(this).data('url'));
+ //        }
+ //    }
+ // }
+
+
+function toURL(url){
+    if(url!= ""){
+        router.loadPage(url);
+    }
+}
+
+
+
+
+// var userId;
+// // console.log(document.referrer);
+// function ModalTips(parameters){
+//     let  {elementId,onOk,onNo,modalvisible,showModal} = parameters
+//     this.obj = $(elementId);
+    
+//     this.init = function(){
+//         this.setIsModalVisible(modalvisible);
+//         this.initEvent();
+//     }
+
+//     this.initEvent = function(){
+//         this.obj.on("click",(e)=>{
+//             console.log(e.target.className);
+//             console.log(this);
+//             switch(e.target.id){
+//                 case "onOK":
+//                     onOk(e.target,this) 
+//                     break
+//                 case "onNO":
+//                     onNo(e.target,this) 
+//                     break
+//                 case "showModal":
+//                     showModal(e.target,this) 
+//                     break      
+//                 default:
+//                     console.log("元素id问题");
+//                     break
+//             }
+//         })
+//     }
+
+//     this.setIsModalVisible = function(state){
+//         this.obj.css("display",`${state?"block":"none"}`);
+//     }
+// }
+
+//  var modal = new ModalTips({
+//     elementId:"#modal-tips",
+//     onOk:function(obj,that){
+//         that.setIsModalVisible(false);
+//         router.loadPage("/flow/?flowId=285")
+//     },
+//     onNo:function(obj,that){
+//         that.setIsModalVisible(false);
+//     },
+//     showModal:function(obj,that){
+//         that.setIsModalVisible(false);
+//     },
+// })
+
+
+//  var remind = new ModalTips({
+//     elementId:"#modal-remind",
+//     onOk:function(obj,that){
+//         that.setIsModalVisible(false);
+//       	router.loadPage("/flow/?flowId=285")
+        
+//     },
+//     onNo:function(obj,that){
+//         that.setIsModalVisible(false);
+//     },
+//     showModal:function(obj,that){
+//         that.setIsModalVisible(false);
+//     },
+// })
+ 
+
+// remind.init();
+// modal.init();
+ console.log(document.querySelector("header #username"))
+$("#currentflow").click(function(e){
+  
+  let id = $("#username").data("userId")
+      
+  if(id=="") return
+    $.ajax({
+    url:window.baseURL + 
+    "/api/flow/data?formId=496&flowId=285&completed=false&current=1&StarterId="+id,
+    method:"Get",
+    async: false,
+    xhrFields:{withCredentials:true},
+    success: function({data}){
+    if(data.length == 0){
+    modal.setIsModalVisible(true)
+    }else{
+      router.loadPage("/flow/?flowId=285");
+    }
+    }
+    });
+})
+
+var indexpoll = 0;
+
+ // 异步请求接口情况
+// function poll() {
+//     indexpoll++;
+//     setTimeout(function() {
+//         $.get("/api/user/current", function(data, status) {
+//             if(indexpoll == 5){
+//             	 remind.setIsModalVisible(true);
+//             	 return 
+//             }
+//             // 前端接收到后端返回的数据时发起下一次请求
+//             poll();
+//         });
+//     }, 3000);
+// }
+//  poll()
+```
+

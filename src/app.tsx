@@ -11,6 +11,8 @@ import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ganfa
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import fixMenuItemIcon from '@/utils/utils';
+import {tokenIt} from '@/utils/authority'
+import {User} from '@/types'
 // import { App,AppSettings  } from './types'
 // import { getAppSettings } from './services/app';
 
@@ -31,16 +33,16 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{  
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
+  currentUser?: User;
   menuData?: MenuDataItem[];
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchUserInfo?: () => Promise<User| undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
       //请求当前用户的信息
-      const currentUser = await queryCurrentUser();
+      const {data} = await queryCurrentUser();
       //并且返回
-      return currentUser;
+      return data;
     } catch (error) {
       //没有请求到当前用户信息就回登录页面url
       history.push(loginPath);
@@ -64,55 +66,16 @@ export async function getInitialState(): Promise<{
   };
 }
 
-// https://umijs.org/zh-CN/plugins/plugin-layout
-// export const layout = ({
-//   initialState,
-// }: {
-//   initialState: { settings?: LayoutSettings; menuData: MenuDataItem[];currentUser?: API.CurrentUser };
-// }):BasicLayoutProps  => {
-//   return {
-//     menuDataRender: (menuData) => initialState.menuData || menuData,
-//     rightContentRender: () => <RightContent />,
-//     disableContentMargin: false,
-//     waterMarkProps: {
-//       content: initialState?.currentUser?.name,
-//     },
-//     footerRender: () => <Footer />,
-//     onPageChange: () => {
-//       const { location } = history;
-//       // 如果没有登录，重定向到 login
-//       if (!initialState?.currentUser && location.pathname !== loginPath) {
-//         history.push(loginPath);
-//       }
-//     },
-//     links: isDev
-//       ? [
-//           <Link to="/umi/plugin/openapi" target="_blank">
-//             <LinkOutlined />
-//             <span>openAPI 文档</span>
-//           </Link>,
-//           <Link to="/~docs">
-//             <BookOutlined />
-//             <span>业务组件文档</span>
-//           </Link>,
-//         ]
-//       : [],
-//     menuHeaderRender: undefined,
-//     // 自定义 403 页面
-//     // unAccessible: <div>unAccessible</div>,
-//     ...initialState?.settings,
-//   };
-// };
 
 // https://umijs.org/zh-CN/plugins/plugin-layout
 export const layout = ({ initialState }: {
-  initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser; menuData: MenuDataItem[]; };
+  initialState: { settings?: LayoutSettings; currentUser?:User; menuData: MenuDataItem[]; };
 }):BasicLayoutProps  => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.nickName,
     },
     //业务组件 页脚
     footerRender: () => <Footer />,
@@ -196,22 +159,14 @@ const errorHandler = (error: ResponseError) => {
 // https://umijs.org/zh-CN/plugins/plugin-request
 export const request: RequestConfig = {
   errorHandler,
+  requestInterceptors:[
+    tokenIt
+  ]
 };
  
-// import * as iconMap from '@ant-design/icons';
-
-// return {
-//  name: lists.name,
-//  icon: lists.icon === null || lists.icon === 'table' ? '' : React.createElement(iconMap[lists.icon]),
-//  path: lists.router,
-//  component: lists.viewPath,
-// }
 
 
 /*
   app.tsx 
     getInitialState  会在整个应用最开始执行，返回值会作为全局共享的数据
-
-
-
 */

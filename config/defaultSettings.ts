@@ -11,7 +11,7 @@ const Settings: LayoutSettings & {
   fixedHeader: true,
   fixSiderbar: true,
   colorWeak: false,
-  title: '干饭魂平台',
+  title: '干饭庄平台',
   pwa: false,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',

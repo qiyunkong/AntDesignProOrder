@@ -2,6 +2,7 @@ import { IRoute } from 'umi';
 
 const organizationRoutes: IRoute = {
   name: '组织架构 ',
+  path: '/organization',
   routes: [
     {
       path: '/organization/category',
