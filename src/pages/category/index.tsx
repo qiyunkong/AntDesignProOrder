@@ -10,9 +10,9 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
-import {addCategory,getCategory,delCategory} from '@/services/ganfanhun'
-import {CategoryListItem} from '@/types'
+// import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
+import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun'
+import {CategoryListItem, IPage, PageList} from '@/types'
 
 /**
  * 添加节点
@@ -36,17 +36,17 @@ const handleAdd = async (fields: CategoryListItem) => {
 };
 
 /**
- * 更新节点
+ * 更新节点 异步函数
  *
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('正在配置');
   try {
-    await updateRule({
+    await putCategory({
+      _id: fields._id,
       name: fields.name,
       desc: fields.desc,
-      key: fields.key,
     });
     hide();
 
@@ -93,8 +93,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<CategoryListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
 
-  /** 国际化配置 */
-  const intl = useIntl();
 
   /** 表格规格 */
   const columns: ProColumns<CategoryListItem,"text">[] = [
@@ -160,10 +158,14 @@ const TableList: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-         配置
+         更新
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-         订阅警报
+        <a key="subscribeAlert"  
+          onClick={() => {
+            console.log('123456')
+          }}
+        >
+         查看子分类
         </a>,
       ],
     },
@@ -172,7 +174,7 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<CategoryListItem, API.PageParams>
+      <ProTable<CategoryListItem, IPage>
         headerTitle='查询表格'
         actionRef={actionRef}
         rowKey="_id"
@@ -266,6 +268,7 @@ const TableList: React.FC = () => {
       
       <UpdateForm
         onSubmit={async (value) => {
+          
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);

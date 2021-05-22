@@ -47,12 +47,18 @@
 
 12. 服务端修改页面logo，页面标题， icon
 
+13. 使用token 验证用户
+
+14. 更新分类模块 取消问题， 更新根据ID值怎么去更新操作
+
+15. 
+
 ## 项目结构
 
 ## 项目问题
 
 1. git commit -m "备注" 提交失败，报错：git提交失败——running pre-commit hook: lint-staged <a href="https://blog.csdn.net/zhan_lang/article/details/88691279">解放方案</a>
-2. 
+2. util.js:18 async-validator: ["请输入undefined"] 黄色警告
 
 
 
@@ -71,6 +77,7 @@
    	  title: '分类名称',  //表头名称
          dataIndex: 'name', //绑定接口数据源键值
          tip: '规则名称是唯一的 key', //提示语
+         valueEnum:"枚举"
          render: (dom, entity) => {  //回调事件
            return (
              <a
@@ -86,8 +93,23 @@
    }
    ```
 
-2. 
+2. ProTable 组件使用 
 
+   ```
+   //表格标题
+   headerTitle
+   
+   ```
+   
+3. token 的使用 获取当前用户  [参考案例](https://blog.csdn.net/Violent_clown/article/details/108468950)
+
+   ```js
+   return request<API.CurrentUser>('/api/account/currentUser', {
+       method: 'GET',
+       ...(options || {}),
+   });
+   ```
+   
 ## 项目参考
 
 官网：https://beta-pro.ant.design/
@@ -98,9 +120,11 @@
 
 ​	Router 使用	/hooks/useRouter 
 
-​    表格  pages/form/data/index.tsx
+​    表格 自定义表格 表格头  pages/form/data/index.tsx  [学习案例](https://blog.csdn.net/jenie/article/details/106248150)
 
+​     pro表格  pages/order/index.tsx  
 
+​	
 
 
 
