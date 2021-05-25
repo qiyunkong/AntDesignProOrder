@@ -1,46 +1,47 @@
-import {parse,stringify} from 'qs'
-import {history} from 'umi'
-import useApp from './useApp'
+import qs from 'qs';
+import { history } from 'umi';
 
-const getQuery = () =>{
-    const {href} = window.location
-    const qsIndex = href.indexOf('?')
-    if(qsIndex !== -1){
-        return parse(href.split('?')[1])
-    }
-    return {}
+interface LoadPageOption {
+  isReplace?: boolean;
+  saveQuery?: boolean;
 }
 
-export default function useRouter(){
-    const {currentApp} = useApp()
-    const reloadPage = (params:Object = {})=>{
-        const query = {...getQuery(),...params}
-        const querystring = stringify(query)
-        history.replace(`${history.location.pathname}?${querystring}`)
+export default function useRouter() {
+  const routerBase = (pathname: string, query?: Record<string, any>, option?: LoadPageOption) => {
+    const reloadQuery = option?.saveQuery ? { ...history.location.query, ...query } : { ...query };
+    if (option?.isReplace) {
+      history.replace(`${pathname}${reloadQuery ? `?${qs.stringify(reloadQuery)}` : ''}`);
+    } else {
+      history.push(`${pathname}${reloadQuery ? `?${qs.stringify(reloadQuery)}` : ''}`);
     }
-    interface LoadPageOption{
-        isReplace:boolean
-    }
-    const loadPage = (url?:string,query?:{[name:string]:any},option?:LoadPageOption) =>{
-        const querystring = query ? `?${stringify(query)}` : ''
-        let pathName = url || history.location.pathname
+  };
 
-        if(pathName.startsWith('/') && currentApp.id && pathName !== '/' && !!url){
-            pathName = `/${currentApp.eName}${pathName}`
-        }
-        if(option?.isReplace){
-            history.replace(pathName + querystring)
-        }else{
-            history.replace(pathName + querystring)
-        }
-    }
-    const goBack = () =>{
-        history.goBack()
-    }
-    return {
-        reloadPage,
-        loadPage,
-        goBack
-    }
+  const loadPage = (
+    url?: string,
+    query?: Record<string, string | number | undefined>,
+    option?: LoadPageOption,
+  ) => {
+    const urlObj = (url || '').split('?');
+    const pathName = urlObj[0] || history.location.pathname;
 
+    routerBase(pathName, { ...qs.parse(urlObj[1]), ...query }, option);
+  };
+  const reloadPage = (query?: Record<string, any>, option: LoadPageOption = {}) => {
+    const reloadQuery = { ...query, t: new Date().getTime() };
+    option!.isReplace = option.isReplace == null ? true : option?.isReplace;
+    option!.saveQuery = option.saveQuery == null ? true : option?.saveQuery;
+    routerBase(history.location.pathname, reloadQuery, option);
+  };
+  const goHome = (query?: Record<string, any>, option: LoadPageOption = {}) => {
+    routerBase('/', query, option);
+  };
+  const goBack = () => {
+    history.goBack();
+  };
+  return {
+    reloadPage,
+    loadPage,
+    goBack,
+    goHome,
+  };
 }

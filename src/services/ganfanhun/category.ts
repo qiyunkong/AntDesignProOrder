@@ -7,9 +7,9 @@ export async function getCategory(params:{
     /** 当前的页码 */
     current?:number
     pageSize?:number
-    
+
 }, options?: { [key: string]: any }){
-    return request<PageList<CategoryListItem>>('/api/category',{
+    return request<PageList<CategoryListItem>>('/api/category?parentId=0',{
         method:'GET',
         params:{
             ...params

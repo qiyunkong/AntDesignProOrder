@@ -4,6 +4,21 @@ export interface CategoryListItem{
     name:string,
     parentId?:string,
     desc?:string,
-    status?:number,
+    status?:boolean,
     createTime?:Date,
 }
+
+
+
+export interface Category{
+  _id:string,
+  name:string,
+  parentId?:string,
+  desc?:string,
+  status?:boolean,
+  createTime?:Date
+}
+
+
+
+

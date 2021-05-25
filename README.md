@@ -47,18 +47,40 @@
 
 12. 服务端修改页面logo，页面标题， icon
 
-13. 使用token 验证用户
+13. 使用token 验证用户 请求拦截器
 
 14. 更新分类模块 取消问题， 更新根据ID值怎么去更新操作
 
-15. 
+15. 高级组件中 modalPro 显示状态问题 确定 和取消按钮问题
+
+16. 表格不展示ID列
+
+17. 发起GET请求时 路由对象的使用  pages切换  在?后拼接参数
+
+18. 用户信息没有展示的问题
+
+19. 搭建面包屑
 
 ## 项目结构
 
 ## 项目问题
 
 1. git commit -m "备注" 提交失败，报错：git提交失败——running pre-commit hook: lint-staged <a href="https://blog.csdn.net/zhan_lang/article/details/88691279">解放方案</a>
+
 2. util.js:18 async-validator: ["请输入undefined"] 黄色警告
+
+3. devScripts.js:6523 Warning: Form already set 'initialValues' with path 'name'. Field can not overwrite it.红色报错
+
+4. > 黄色 运行警告 处理时间
+   >
+   > [Violation] 'requestAnimationFrame' handler took <N>ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 137ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 87ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 66ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 95ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 59ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 55ms
+   > index.js:31 [Violation] 'requestAnimationFrame' handler took 120ms
 
 
 
@@ -70,51 +92,59 @@
 
 ## 项目页面
 
-1. 表格规格 表格组件的参数说明
+表格规格 表格组件的参数说明
 
-   ```js
-   const colums = {
-   	  title: '分类名称',  //表头名称
-         dataIndex: 'name', //绑定接口数据源键值
-         tip: '规则名称是唯一的 key', //提示语
-         valueEnum:"枚举"
-         render: (dom, entity) => {  //回调事件
-           return (
-             <a
-               onClick={() => {
-                 setCurrentRow(entity);
-                 setShowDetail(true);
-               }}
-             >
-               {dom}
-             </a>
-           );
-         },
-   }
-   ```
+```js
+const colums = {
+	  title: '分类名称',  //表头名称
+      dataIndex: 'name', //绑定接口数据源键值
+      tip: '规则名称是唯一的 key', //提示语
+      valueEnum:"枚举"
+      render: (dom, entity) => {  //回调事件
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
+}
+```
 
-2. ProTable 组件使用 
+ProTable 组件使用 
 
-   ```
-   //表格标题
-   headerTitle
-   
-   ```
-   
-3. token 的使用 获取当前用户  [参考案例](https://blog.csdn.net/Violent_clown/article/details/108468950)
+```
+//表格标题
+headerTitle
 
-   ```js
-   return request<API.CurrentUser>('/api/account/currentUser', {
-       method: 'GET',
-       ...(options || {}),
-   });
-   ```
-   
+```
+
+token 的使用 获取当前用户  [参考案例](https://blog.csdn.net/Violent_clown/article/details/108468950)
+
+```js
+return request<API.CurrentUser>('/api/account/currentUser', {
+    method: 'GET',
+    ...(options || {}),
+});
+```
+
+表格的回调函数
+
+```jsx
+
+```
+
+
+
 ## 项目参考
 
 官网：https://beta-pro.ant.design/
 
-个人张立志博客：https://www.yuque.com/aspirantzhang/antdprov5/
+个人张立志博客：https://www.yuque.com/aspirantzhang/antdprov5/  学习参考
 
 芒旭项目：
 
@@ -123,6 +153,12 @@
 ​    表格 自定义表格 表格头  pages/form/data/index.tsx  [学习案例](https://blog.csdn.net/jenie/article/details/106248150)
 
 ​     pro表格  pages/order/index.tsx  
+
+
+
+核心动态模型开发参考案例
+
+
 
 ​	
 

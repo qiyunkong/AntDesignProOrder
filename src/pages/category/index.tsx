@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import { Button, message, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
-import { useIntl, FormattedMessage } from 'umi';
+import {  FormattedMessage } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -13,6 +13,9 @@ import UpdateForm from './components/UpdateForm';
 // import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
 import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun'
 import {CategoryListItem, IPage, PageList} from '@/types'
+import useRouter from '@/hooks/useRouter';
+import { Switch } from 'antd';
+import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 
 /**
  * 添加节点
@@ -40,13 +43,14 @@ const handleAdd = async (fields: CategoryListItem) => {
  *
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
+const handleUpdate = async (fields: CategoryListItem) => {
   const hide = message.loading('正在配置');
   try {
     await putCategory({
       _id: fields._id,
       name: fields.name,
       desc: fields.desc,
+      status:fields.status
     });
     hide();
 
@@ -82,13 +86,18 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
 };
 
 const TableList: React.FC = () => {
+
+  const router  = useRouter()
+
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
+  /** 开关loading */
+  const [switchVisible,handleSwitchVisible] = useState<boolean>(false);
+  /** 方法标记 */
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<CategoryListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
@@ -144,7 +153,21 @@ const TableList: React.FC = () => {
           text:"已开启",
           status:1,
         }
-      }
+      },
+      render: (_, record) => (
+        <Switch key="switchStatus" checkedChildren="已展示" unCheckedChildren="不展示" onChange={async (value) => {
+          handleSwitchVisible(true)
+          record.status = value;
+          const success = await handleUpdate(record);
+          if (success) {
+            handleSwitchVisible(false)
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }} loading={switchVisible}  defaultChecked={record.status} />
+      )
     },
     {
       title: "操作",
@@ -160,9 +183,9 @@ const TableList: React.FC = () => {
         >
          更新
         </a>,
-        <a key="subscribeAlert"  
+        <a key="subscribeAlert"
           onClick={() => {
-            console.log('123456')
+           router.loadPage(`?parentId=${record._id}`)
           }}
         >
          查看子分类
@@ -190,7 +213,27 @@ const TableList: React.FC = () => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> 新建
+            <PlusOutlined /> 新建数据
+          </Button>,
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                //显示模块框
+               // handleModalVisible(true);
+              }}
+            >
+            <PlusOutlined />导入表单
+          </Button>,
+            <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              //显示模块框
+              //handleModalVisible(true);
+            }}
+          >
+            <PlusOutlined /> 导出表单
           </Button>,
         ]}
         request={getCategory}
@@ -200,9 +243,12 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        pagination={{
+          pageSize: 5,
+        }}
       />
 
-
+      {/* 短路运算符 如果false 后面不执行 */}
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -254,21 +300,23 @@ const TableList: React.FC = () => {
         }}
       >
         <ProFormText
+          label="分类名称"
           rules={[
             {
               required: true,
               message:"分类名称为必填项",
             },
           ]}
+
           width="md"
           name="name"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ProFormTextArea label="描述" width="md" name="desc" />
       </ModalForm>
-      
+
       <UpdateForm
         onSubmit={async (value) => {
-          
+          console.log(value);
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
@@ -278,10 +326,7 @@ const TableList: React.FC = () => {
             }
           }
         }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-        }}
+        onVisibleChange={handleUpdateModalVisible}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
       />
@@ -309,8 +354,8 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
-    
-    
+
+
     </PageContainer>
   );
 };
