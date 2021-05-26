@@ -2,6 +2,7 @@ import { IRoute } from 'umi';
 
 const systemRoutes: IRoute = {
   name: '系统管理',
+  path:'/system/',
   routes: [
     {
       name: '菜单配置',

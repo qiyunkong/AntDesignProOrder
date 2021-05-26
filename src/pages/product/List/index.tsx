@@ -1,67 +1,15 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer,Switch,Breadcrumb} from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
+import { Button, message, Drawer} from 'antd';
+import React, { useState, useRef } from 'react';
 import {  FormattedMessage } from 'umi';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm from './components/UpdateForm';
-import UpdateSwitch from './components/UpdateSwitch';
-import ProCard from '@ant-design/pro-card';
-// import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
-import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun'
+import {getProduct,delCategory} from '@/services/ganfanhun'
 import {CategoryListItem, IPage} from '@/types'
-
-
-/**
- * 添加节点
- *
- * @param fields
- */
-const handleAdd = async (fields: CategoryListItem) => {
-
-  const hide = message.loading('正在添加');
-  try {
-    const result =  await addCategory({ ...fields });
-    hide();
-    message.success('添加成功');
-    console.log(result)
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 更新节点 异步函数
- *
- * @param fields
- */
-const handleUpdate = async (fields: CategoryListItem) => {
-  const hide = message.loading('正在配置');
-  try {
-    await putCategory({
-      _id: fields._id,
-      name: fields.name,
-      desc: fields.desc,
-      status:fields.status
-    });
-    hide();
-
-    message.success('更新成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('更新失败请重试！');
-    return false;
-  }
-};
-
+import useRouter from '@/hooks/useRouter';
 /**
  * 删除节点
  *
@@ -85,28 +33,15 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
 };
 
 
-const TableList: React.FC = () => {
-
-  /** 新建窗口的弹窗 */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+const ProductList: React.FC = () => {
+  const router = useRouter();
   /** 删除的弹框 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 方法标记 */
   const actionRef = useRef<ActionType>();
-  const [link,setLink] = useState<CategoryListItem[]>();
   /** */
   const [currentRow, setCurrentRow] = useState<CategoryListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
-
-  /** 分类节点ID*/
-  const [parentId,setParentId] = useState<string>('0');
-
-
-    // useEffect(()=>{
-    //   actionRef.current?.reload()
-    // },[parentId])
 
   /** 表格规格 */
   const columns: ProColumns<CategoryListItem,"text">[] = [
@@ -159,16 +94,6 @@ const TableList: React.FC = () => {
           status:'true',
         }
       },
-      render: (_, record) => (
-        <Switch checkedChildren={"已展示"}  unCheckedChildren={"已关闭"} onChange={async (vaule) => {
-          record.status = vaule
-          const success = await handleUpdate(record);
-          if (success) {
-            setCurrentRow(undefined);
-          }
-         }
-        }   defaultChecked={record.status} />
-      )
     },
     {
       title: "操作",
@@ -178,7 +103,6 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={() => {
-            handleUpdateModalVisible(true);
             setCurrentRow(record);
           }}
         >
@@ -186,16 +110,6 @@ const TableList: React.FC = () => {
         </a>,
         <a key="subscribeAlert"
           onClick={() => {
-            //设置父节点分类ID
-            setParentId(record._id)
-            //设置面包屑
-            let _link =  link
-            _link?.push(record)
-            setLink(_link)
-            // 清空选中项
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
           }}
         >
          查看子分类
@@ -207,16 +121,6 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProCard>
-      <Breadcrumb>
-        {link?.length && (
-          link.map(({name,_id})=>{
-            return <Breadcrumb.Item>{name}</Breadcrumb.Item>
-          })
-        )}
-      </Breadcrumb>
-      </ProCard>
-
       <ProTable<CategoryListItem, IPage>
         headerTitle='查询表格'
         actionRef={actionRef}
@@ -225,22 +129,11 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              //显示模块框
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建数据
-          </Button>,
             <Button
               type="primary"
               key="primary"
               onClick={() => {
-                //显示模块框
-               // handleModalVisible(true);
+                router.loadPage("/product/Edit")
               }}
             >
             <PlusOutlined />导入表单
@@ -256,10 +149,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 导出表单
           </Button>,
         ]}
-        request={getCategory}
-        params={{
-          parentId:parentId
-        }}
+        request={getProduct}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -306,55 +196,6 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
 
-
-      <ModalForm
-        title="新建分类"
-        width="400px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          value.parentId = parentId
-          const success = await handleAdd(value as CategoryListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          label="分类名称"
-          rules={[
-            {
-              required: true,
-              message:"分类名称为必填项",
-            },
-          ]}
-
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea label="描述" width="md" name="desc" />
-      </ModalForm>
-
-      <UpdateForm
-        onSubmit={async (value) => {
-          console.log(value);
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onVisibleChange={handleUpdateModalVisible}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
-
       <Drawer
         width={600}
         visible={showDetail}
@@ -383,4 +224,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default ProductList;

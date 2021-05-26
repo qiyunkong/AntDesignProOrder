@@ -27,10 +27,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const {values,updateModalVisible,onSubmit,onVisibleChange} = props
   // const [initialValues, setinitialValues] = useState<Partial<CategoryListItem>>()
   const [form] = Form.useForm();
-  // componentDidMount
+ /** 生命周期函數 */
   useEffect(() => {
-     // 需要在 componentDidMount 执行的内容
-     //console.log(values)
     form.setFieldsValue(values)
   }, [values]);
 

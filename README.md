@@ -134,7 +134,11 @@ return request<API.CurrentUser>('/api/account/currentUser', {
 
 表格的回调函数
 
-```jsx
+①首先声明`hook`的变量是一个全局的`opId `
+②当点击`查看子分类`时触发事件 执行`setOpID `函数，在使用`声明周期函数useEffect`监听`opId `变化
+③执行表格数据的渲染函数 对象.run()
+
+```
 
 ```
 

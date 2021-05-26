@@ -1,34 +1,58 @@
-import {Category,PageList} from '@/types'
+import {Category,CategoryParams,JSONResult,PageList} from '@/types'
 import {request} from 'umi'
 import {useState} from 'react'
 
 export default function useCategory(){
-  const [categorys,setCategory] = useState<PageList<Category>>()
+  const [category,setCategory] = useState<Category>()
+  const [categorys,setCategorys] = useState<PageList<Category>>()
 
-  const getCategory = (params:Category) => {
-    const res = request('/api/category?parentId=0',{params})
 
+  const getCategoryList = async (params:CategoryParams,options?:{[key:string]:any}) => {
+    const res = await request<JSONResult<PageList<Category>>>('/api/category',{
+      method:'GET',
+      params:{
+        ...params
+      },
+      ...(options || {})
+    })
+    setCategorys(res.data);
+    return res
+  }
+
+  const putCategory = async (body:Category,options?:{[key:string]:any}) =>{
+    const res = await request('/api/caregory',{
+      data:body,
+      method:'PUT',
+      ...(options || {})
+    })
+    setCategory(res);
 
   }
 
-  const putCategory = (body:Category,options?:{[key:string]:any}) =>{
-    const res = request('/api/caregory',{data:body,method:'PUT',...(options || {})})
+  const addCategory = async (body:Category,options?:{[key:string]:any}) =>{
+    return request('/api/caregory',{
+      data:body,
+      method:'POST',
+      ...(options ||{} )
+    })
   }
 
-  const addCategory = (body:Category,options?:{[key:string]:any}) =>{
-    const res  = request('/api/caregory',{data:body,method:'POST',...(options ||{} )})
-  }
-
-  const delCategory = (body:Category,options?:{[key:string]:any}) =>{
-    const res = request('/api./caregory',{data:body,method:'DELETE',...(options ||{} )})
+  const delCategory = async (body:{},options?:{[key:string]:any}) =>{
+    return request('/api/caregory',{
+      data:body,
+      method:'DELETE',
+      ...(options ||{} )
+    })
   }
 
 
   return {
-    getCategory,
+    category,
+    categorys,
     putCategory,
     addCategory,
-    delCategory
+    delCategory,
+    getCategoryList,
   }
 }
 

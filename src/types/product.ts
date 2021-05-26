@@ -1,5 +1,6 @@
 import {IPage} from './common'
-export interface CategoryListItem{
+
+export interface ProductListItem{
     _id:string,
     name:string,
     parentId?:string,
@@ -8,11 +9,11 @@ export interface CategoryListItem{
     createTime?:Date,
 }
 
-export interface CategoryParams extends IPage {
+export interface ProductParams extends IPage {
   parentId?:string | '0'
 }
 
-export interface Category{
+export interface Product{
   _id:string,
   name:string,
   parentId?:string,
@@ -20,7 +21,3 @@ export interface Category{
   status?:boolean,
   createTime?:Date
 }
-
-
-
-

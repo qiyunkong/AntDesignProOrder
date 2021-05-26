@@ -1,8 +1,8 @@
 import {request} from 'umi'
-import {CategoryListItem,JSONResult,PageList} from '../../types'
+import {ProductListItem,JSONResult,PageList} from '../../types'
 
 /** 拉取分类列表的接口函数 GET /api/category */
-export async function getCategory(params:{
+export async function getProduct(params:{
     //query
     /** 当前的页码 */
     current?:number
@@ -10,7 +10,7 @@ export async function getCategory(params:{
     parentId?:string | '0'
 
 }, options?: { [key: string]: any }){
-    return request<PageList<CategoryListItem>>('/api/category',{
+    return request<PageList<ProductListItem>>('/api/category?parentId=0',{
         method:'GET',
         params:{
             ...params
@@ -20,8 +20,8 @@ export async function getCategory(params:{
 }
 
 /** 更新分类的接口函数 PUT /api/category */
-export async function putCategory(body:CategoryListItem, options?: { [key: string]: any }){
-    return request<CategoryListItem>('/api/category',{
+export async function putProduct(body:ProductListItem, options?: { [key: string]: any }){
+    return request<ProductListItem>('/api/category',{
         method:'PUT',
         data:body,
         ...(options || {}),
@@ -29,8 +29,8 @@ export async function putCategory(body:CategoryListItem, options?: { [key: strin
 }
 
 /** 新建分类的接口函数 POST /api/category */
-export async function addCategory(body:CategoryListItem, options?: { [key: string]: any }){
-    return request<JSONResult<CategoryListItem>>('/api/category',{
+export async function addProduct(body:ProductListItem, options?: { [key: string]: any }){
+    return request<JSONResult<ProductListItem>>('/api/category',{
         method:'POST',
         data:body,
         ...(options || {}),
@@ -38,7 +38,7 @@ export async function addCategory(body:CategoryListItem, options?: { [key: strin
 }
 
 /** 删除分类的接口函数 DELETE /api/category */
-export async function delCategory(params:{}, options?: { [key: string]: any }){
+export async function delProduct(params:{}, options?: { [key: string]: any }){
     return request('/api/category',{
         method:'DELETE',
         params:{

@@ -2,6 +2,7 @@
 export interface IPage{
     current?:number
     pageSize?:number
+    parentId?:string
 }
 
 export interface PageList<T> extends IPage{

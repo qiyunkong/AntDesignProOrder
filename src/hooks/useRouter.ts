@@ -26,6 +26,7 @@ export default function useRouter() {
 
     routerBase(pathName, { ...qs.parse(urlObj[1]), ...query }, option);
   };
+
   const reloadPage = (query?: Record<string, any>, option: LoadPageOption = {}) => {
     const reloadQuery = { ...query, t: new Date().getTime() };
     option!.isReplace = option.isReplace == null ? true : option?.isReplace;
@@ -38,10 +39,14 @@ export default function useRouter() {
   const goBack = () => {
     history.goBack();
   };
+  const push = (url:string) =>{
+    history.push(url)
+  }
   return {
     reloadPage,
     loadPage,
     goBack,
     goHome,
+    push
   };
 }
