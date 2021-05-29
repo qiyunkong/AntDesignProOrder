@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Tooltip, Tag } from 'antd';
-import { DownOutlined, QuestionCircleOutlined, EllipsisOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
+import { DownOutlined, QuestionCircleOutlined, EllipsisOutlined } from '@ant-design/icons';
 
 //tag 类型
 export type Status = {
@@ -64,19 +64,19 @@ for (let i = 0; i < 5; i += 1) {
 
 const columns: ProColumns<TableListItem>[] = [
   {
-    title: '应用名称',
+    title: '菜单名称',
     width: 120,
     dataIndex: 'name',
     render: (_) => <a>{_}</a>,
   },
   {
-    title: '状态',
+    title: '菜单图标',
     width: 120,
     dataIndex: 'status',
     render: (_, record) => <Tag color={record.status.color}>{record.status.text}</Tag>,
   },
   {
-    title: '容器数量',
+    title: '菜单别名',
     width: 120,
     dataIndex: 'containers',
     align: 'right',
@@ -117,12 +117,9 @@ const columns: ProColumns<TableListItem>[] = [
     key: 'option',
     valueType: 'option',
     render: () => [
-      <a key="1">链路</a>,
-      <a key="2">报警</a>,
-      <a key="3">监控</a>,
-      <a key="4">
-        <EllipsisOutlined />
-      </a>,
+      <a key="2">修改</a>,
+      <a key="3">删除</a>,
+      <a key="1">创建子路由</a>
     ],
   },
 ];

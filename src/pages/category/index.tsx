@@ -1,19 +1,19 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer,Switch,Breadcrumb} from 'antd';
-import React, { useState, useRef, useEffect } from 'react';
+import {history} from 'umi'
 import {  FormattedMessage } from 'umi';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm from './components/UpdateForm';
-import UpdateSwitch from './components/UpdateSwitch';
 import ProCard from '@ant-design/pro-card';
-// import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
-import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun'
+import ProTable from '@ant-design/pro-table';
 import {CategoryListItem, IPage} from '@/types'
+import UpdateForm from './components/UpdateForm';
+import { PlusOutlined } from '@ant-design/icons';
+import UpdateSwitch from './components/UpdateSwitch';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import React, { useState, useRef, useEffect } from 'react';
+import { Button, message, Drawer,Switch,Breadcrumb} from 'antd';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun'
 
 
 /**
@@ -211,9 +211,18 @@ const TableList: React.FC = () => {
       <Breadcrumb>
         {link?.length && (
           link.map(({name,_id})=>{
-            return <Breadcrumb.Item>{name}</Breadcrumb.Item>
+            return <Breadcrumb.Item onClick={()=>{
+            }}>{name}</Breadcrumb.Item>
           })
         )}
+        <Breadcrumb.Item onClick={()=>{
+           //设置父节点分类ID
+           setParentId('0')
+            // 清空选中项
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+            }}>回退</Breadcrumb.Item>
       </Breadcrumb>
       </ProCard>
 

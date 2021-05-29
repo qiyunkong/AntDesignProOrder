@@ -6,7 +6,7 @@ import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import type { ResponseError } from 'umi-request';
-// import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ant-design-pro/api'; 
+// import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ant-design-pro/api';
 import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ganfanhun'
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { MenuDataItem } from '@ant-design/pro-layout';
@@ -29,9 +29,9 @@ export const initialStateConfig = {
 };
 
 /**
- * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state  
+ * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
-export async function getInitialState(): Promise<{  
+export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: User;
   menuData?: MenuDataItem[];
@@ -58,11 +58,13 @@ export async function getInitialState(): Promise<{
       fetchUserInfo,
       currentUser,
       menuData,
+      settings: {},
     };
   }
   return {
     fetchUserInfo,
     menuData: [],
+    settings: {},
   };
 }
 
@@ -98,13 +100,13 @@ export const layout = ({ initialState }: {
           </Link>,
         ]
       : [],
-    //顶部菜单  
+    //顶部菜单
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     ...initialState?.settings,
     menuDataRender: ()=>fixMenuItemIcon(initialState.menuData),
-    
+
   };
 };
 
@@ -163,10 +165,10 @@ export const request: RequestConfig = {
     tokenIt
   ]
 };
- 
+
 
 
 /*
-  app.tsx 
+  app.tsx
     getInitialState  会在整个应用最开始执行，返回值会作为全局共享的数据
 */

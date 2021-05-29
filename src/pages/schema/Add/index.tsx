@@ -1,18 +1,10 @@
+import { Button,message } from 'antd';
 import React, { useState } from 'react';
+import ProCard from '@ant-design/pro-card';
+import ProField from '@ant-design/pro-field';
 import type { ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
-import ProForm, {
-  StepsForm,
-  ProFormText,
-  ProFormDatePicker,
-  ProFormDateTimePicker,
-  ProFormSelect,
-  ProFormTextArea,
-  ProFormCheckbox,
-} from '@ant-design/pro-form';
-import ProField from '@ant-design/pro-field';
-import ProCard from '@ant-design/pro-card';
-import { Button,message } from 'antd';
+import ProForm, { StepsForm, ProFormText, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect, ProFormTextArea, ProFormCheckbox,} from '@ant-design/pro-form';
 
 type DataSourceType = {
   id: React.Key;

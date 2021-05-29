@@ -18,6 +18,7 @@ const GlobalHeaderRight: React.FC = () => {
   const { initialState } = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
+    console.log(initialState)
     return null;
   }
 

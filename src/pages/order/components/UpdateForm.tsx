@@ -1,14 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
-import {
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  StepsForm,
-  ProFormRadio,
-  ProFormDateTimePicker,
-} from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
+import {ProFormSelect,ProFormText,ProFormTextArea,StepsForm,ProFormRadio,ProFormDateTimePicker} from '@ant-design/pro-form';
 
 export type FormValueType = {
   target?: string;

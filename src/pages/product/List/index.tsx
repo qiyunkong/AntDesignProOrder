@@ -1,15 +1,15 @@
-import { PlusOutlined } from '@ant-design/icons';
+import {  FormattedMessage } from 'umi';
+import useRouter from '@/hooks/useRouter';
+import ProTable from '@ant-design/pro-table';
 import { Button, message, Drawer} from 'antd';
 import React, { useState, useRef } from 'react';
-import {  FormattedMessage } from 'umi';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import {CategoryListItem, IPage} from '@/types';
+import { PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {getProduct,delCategory} from '@/services/ganfanhun'
-import {CategoryListItem, IPage} from '@/types'
-import useRouter from '@/hooks/useRouter';
+import {getProduct,delCategory} from '@/services/ganfanhun';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 /**
  * 删除节点
  *

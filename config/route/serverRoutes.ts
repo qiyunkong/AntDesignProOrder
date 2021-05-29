@@ -2,17 +2,18 @@ import { IRoute } from 'umi';
 
 const serverRoutes: IRoute = {
   name: '业务管理',
+  path:'/server/',
   routes: [
     {
-      path: '/order',
+      path: '/server/order',
       component: './order',
     },
     {
-      path: '/product',
+      path: '/server/product',
       component: './product/List',
     },
     {
-      path:'/product/Edit',
+      path:'/server/product/Edit',
       component:'./product/Edit'
     }
   ],

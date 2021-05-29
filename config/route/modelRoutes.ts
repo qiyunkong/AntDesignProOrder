@@ -2,14 +2,14 @@ import { IRoute } from 'umi';
 
 const modelRoutes: IRoute = {
   name: '模型管理 ',
-  path: '/model/',
+  path:'/model/',
   routes: [
     {
-      path: '/model/Add',
+      path: '/model/add',
       component: './schema/Add',
     },
     {
-      path: '/model/List',
+      path: '/model/list',
       component: './schema/List',
     },
   ],
