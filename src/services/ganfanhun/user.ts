@@ -14,7 +14,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 
 /** 获取当前的用户菜单 GET /api/menuData */
 export async function fetchMenuData(params:User | undefined, options?: { [key: string]: any }) {
-    return request<API.MenuData>("/api/menu",{
+    return request<API.MenuData>("/api/menu/dev",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -25,4 +25,3 @@ export async function fetchMenuData(params:User | undefined, options?: { [key: s
       ...(options || {}),
     })
   }
-  

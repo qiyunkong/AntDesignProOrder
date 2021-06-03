@@ -1,4 +1,5 @@
 import {IPage} from './common'
+
 export interface CategoryListItem{
     _id:string,
     name:string,

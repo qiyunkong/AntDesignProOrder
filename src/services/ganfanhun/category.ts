@@ -13,7 +13,7 @@ export async function getCategory(params:{
     return request<PageList<CategoryListItem>>('/api/category',{
         method:'GET',
         params:{
-            ...params
+          ...params
         },
         ...(options || {}),
     })

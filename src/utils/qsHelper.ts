@@ -22,7 +22,7 @@ const changeType = (value: string) => {
     return decodeURIComponent(value)  //decodeURIComponent() 对编码后的 URI 进行解码：
   }
 
-//URL 查詢  
+//URL 查詢
 export default function getQuery<T>(search?: string): T {
     //浏览器中URL字符串是否存在'?'字符
     const qsIndex = window?.location.href.indexOf('?')
@@ -41,3 +41,5 @@ export default function getQuery<T>(search?: string): T {
     //返回一个值 what?
     return (query as unknown) as T
   }
+
+

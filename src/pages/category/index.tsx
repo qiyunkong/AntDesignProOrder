@@ -13,7 +13,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun'
+import {addCategory,getCategory,delCategory,putCategory,getMenu} from '@/services/ganfanhun'
 
 
 /**
@@ -85,7 +85,7 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
 };
 
 
-const TableList: React.FC = () => {
+const CategoryList: React.FC = () => {
 
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -392,4 +392,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default CategoryList;

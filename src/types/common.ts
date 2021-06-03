@@ -3,11 +3,13 @@ export interface IPage{
     current?:number
     pageSize?:number
     parentId?:string
+    children?:string
 }
 
+
 export interface PageList<T> extends IPage{
-    total:number
-    data:T[]
+  total:number
+  data:T[]
 }
 
 export interface JSONResult<T>{

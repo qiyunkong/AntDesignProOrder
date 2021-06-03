@@ -51,7 +51,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
               message:"请输入规则名称！",
             },
           ]}
-          initialValue={values.name}
         />
         <ProFormTextArea
           name="desc"
