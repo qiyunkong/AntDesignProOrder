@@ -12,8 +12,6 @@ export interface System{
 
 
 export interface FileList{
- uid:number,
- name:string,
- status:string | 'error' | 'success' | 'done' | 'uploading' | 'removed',
- url:string
+ uid?:string,
+ url?:string
 }

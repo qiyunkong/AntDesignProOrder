@@ -1,6 +1,6 @@
 import React from 'react';
 import { message } from 'antd';
-import ProForm, { ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
+import ProForm, { ProFormText, ProFormUploadButton,ProFormDigit, ProFormTextArea,ProFormSwitch,ProFormSelect} from '@ant-design/pro-form';
 import ProCard from '@ant-design/pro-card';
 
 const waitTime = (time: number = 100) => {
@@ -10,76 +10,65 @@ const waitTime = (time: number = 100) => {
     }, time);
   });
 };
+
+
+/**表单提交 */
+const onFinish = async (values:any) =>{
+  const reult =  await waitTime(200)
+  console.log(reult,values);
+  message.success('提交成功');
+}
 const ProductEdit  = () => {
   return (
     <ProCard>
-      <ProForm<{
-      name: string;
-      company?: string;
-      useMode?: string;
-    }>
-      onFinish={async (values) => {
-        await waitTime(2000);
-        console.log(values);
-        message.success('提交成功');
-      }}
-      params={{}}
-      request={async () => {
-        await waitTime(100);
-        return {
-          name: '蚂蚁设计有限公司',
-          useMode: 'chapter',
-        };
-      }}
-    >
-      <ProForm.Group>
+     <ProForm
+        wrapperCol={{span:10}}
+        layout="horizontal"
+        labelCol={{span:4}}
+        onFinish={onFinish}
+      >
         <ProFormText
-          width="md"
+          label="商品名称"
+          name="title"
+          rules={[{required:true,message:'请填写商品名称'}]}
+        />
+        <ProFormDigit label="商品价格" name="price" min={1} max={10} />
+        <ProFormText
+          label="商品分类"
           name="name"
-          label="签约客户名称"
-          tooltip="最长为 24 位"
-          placeholder="请输入名称"
+          rules={[{required:true,message:'商品分类'}]}
         />
-        <ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称" />
-      </ProForm.Group>
-      <ProForm.Group>
+        <ProFormSwitch name="switch" label="是否销空" />
         <ProFormText
-          name={['contract', 'name']}
-          width="md"
-          label="合同名称"
-          placeholder="请输入名称"
+          label="英文名称"
+          name="eName"
         />
-        <ProFormDateRangePicker width="md" name={['contract', 'createTime']} label="合同生效时间" />
-      </ProForm.Group>
-      <ProForm.Group>
-        <ProFormSelect
+         <ProFormSelect.SearchSelect
+          name="spec"
+          label="规格"
           options={[
-            {
-              value: 'chapter',
-              label: '盖章后生效',
-            },
+            { label: '大份', value: 'all' },
+            { label: '中份', value: 'open' },
+            { label: '小份', value: 'closed' },
+            { label: '特大份', value: 'processing' },
           ]}
-          readonly
-          width="xs"
-          name="useMode"
-          label="合同约定生效方式"
         />
-        <ProFormSelect
-          width="xs"
+         <ProFormSelect.SearchSelect
+          name="flavor"
+          label="口味"
           options={[
-            {
-              value: 'time',
-              label: '履行完终止',
-            },
+            { label: '甜辣', value: 'all' },
+            { label: '微辣', value: 'open' },
+            { label: '麻辣', value: 'closed' },
+            { label: '特辣', value: 'processing' },
           ]}
-          name="unusedMode"
-          label="合同约定失效效方式"
         />
-      </ProForm.Group>
-      <ProFormText width="sm" name="id" label="主合同编号" />
-      <ProFormText name="project" width="md" disabled label="项目名称" initialValue="xxxx项目" />
-      <ProFormText width="xs" name="mangerName" disabled label="商务经理" initialValue="启途" />
-    </ProForm>
+        <ProFormTextArea
+          label="商品描述"
+          name="webDesc"
+          rules={[{required:true,message:'请填写商品描述'}]}
+        />
+      </ProForm>
     </ProCard>
   );
 };

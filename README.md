@@ -146,6 +146,14 @@ return request<API.CurrentUser>('/api/account/currentUser', {
 
 
 
+[图表组件](https://v2-pro.ant.design/components/charts-cn/)
+
+
+
+
+
+
+
 ## 项目参考
 
 官网：https://beta-pro.ant.design/

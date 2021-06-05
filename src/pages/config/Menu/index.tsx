@@ -223,7 +223,7 @@ const MenuList: React.FC = () => {
          新建数据
        </Button>,
       ]}
-      // request={getMenu}
+      request={getMenu}
       params={{
         children:children
       }}

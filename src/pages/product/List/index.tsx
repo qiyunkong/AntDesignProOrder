@@ -33,7 +33,7 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
 };
 
 
-const ProductList: React.FC = () => {
+const ProductListPage: React.FC = () => {
   const router = useRouter();
   /** 删除的弹框 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const ProductList: React.FC = () => {
   /** 表格规格 */
   const columns: ProColumns<CategoryListItem,"text">[] = [
     {
-      title: '分类ID',
+      title: '商品ID',
       dataIndex: '_id',
       tip: '规则名称是唯一的 key',
       render: (dom, entity) => {
@@ -63,7 +63,7 @@ const ProductList: React.FC = () => {
       },
     },
     {
-      title: "分类名称",
+      title: "商品名称",
       dataIndex: 'name',
     },
     {
@@ -112,7 +112,7 @@ const ProductList: React.FC = () => {
           onClick={() => {
           }}
         >
-         查看子分类
+         查看子商品
         </a>,
       ],
     },
@@ -133,10 +133,10 @@ const ProductList: React.FC = () => {
               type="primary"
               key="primary"
               onClick={() => {
-                router.loadPage("/product/Edit")
+                router.loadPage("/server/product/Edit")
               }}
             >
-            <PlusOutlined />导入表单
+            <PlusOutlined />新建商品
           </Button>,
             <Button
             type="primary"
@@ -160,6 +160,9 @@ const ProductList: React.FC = () => {
           pageSize: 5,
         }}
       />
+
+
+
 
       {/* 短路运算符 如果false 后面不执行 */}
       {selectedRowsState?.length > 0 && (
@@ -224,4 +227,4 @@ const ProductList: React.FC = () => {
   );
 };
 
-export default ProductList;
+export default ProductListPage;

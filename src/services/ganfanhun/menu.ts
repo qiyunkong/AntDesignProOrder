@@ -19,8 +19,8 @@ import {request} from 'umi'
 export async function getMenu(params:{
   //query
   /** 当前的页码 */
-  current:number
-  pageSize:number
+  current?:number
+  pageSize?:number
   children?:string | '0'
 
 }, options?: { [key: string]: any }){
