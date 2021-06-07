@@ -1,9 +1,8 @@
 import {useState,useEffect} from 'react';
-import { Upload } from "antd";
 import {  ProFormUploadButton } from '@ant-design/pro-form';
 const ImageUpload = (props: any,ref:any)=> {
 
-  const {max,title,label,name} = props
+  const {max,title,label,name} = props;
 
 
 
@@ -31,7 +30,7 @@ const ImageUpload = (props: any,ref:any)=> {
     fileList = fileList.map((file: any) => {
       if (file.response) {
         file.id = file.uid;
-        file.imgUrl = file.response.data.url
+        file.imgUrl = file.response.data.url;
       }
       return file;
     });

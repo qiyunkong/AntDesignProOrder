@@ -6,8 +6,8 @@ export interface Menu{
   path:string,
   alias:string,
   sortNo:number,
+  parentId:string,
   createTime?:Date,
-  children?:string,
 }
 
 export interface MenuListItem{
@@ -17,6 +17,6 @@ export interface MenuListItem{
   path:string,
   alias:string,
   sortNo:number,
+  parentId:string,
   createTime?:Date,
-  children?:string,
 }

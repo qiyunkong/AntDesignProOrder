@@ -83,6 +83,8 @@
    > index.js:31 [Violation] 'requestAnimationFrame' handler took 59ms
    > index.js:31 [Violation] 'requestAnimationFrame' handler took 55ms
    > index.js:31 [Violation] 'requestAnimationFrame' handler took 120ms
+   
+5. 表格泛型不可以定义children命名规则   [解决方案](https://stackoverflow.com/questions/65890189/typeerror-data-foreach-is-not-a-function)
 
 
 

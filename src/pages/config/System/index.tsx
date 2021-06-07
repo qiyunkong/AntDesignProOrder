@@ -7,6 +7,7 @@ import ProForm,{  ProFormText,ProFormTextArea } from '@ant-design/pro-form';
 import {getSetting, postSetting} from '@/services/ganfanhun';
 import {FileList} from '@/types';
 import ImageUpload from './components/ImageUpload';
+import { System} from '@/types'
 
 
 
@@ -26,11 +27,6 @@ function SystemSetting(){
   //图片列表
   const [uploadFileList,setUploadFileList] = useState<FileList[]>([])
 
-  //数据
-  const [imgList,setImgList] = useState<[]>([])
-
-
-
   //表单对象
   const [form] = Form.useForm();
 
@@ -42,15 +38,11 @@ function SystemSetting(){
 
   /**表单提交 */
   const onFinish = async (values:any) =>{
-   console.log( uploadFileList)
-
-    return
+    values.logo = uploadFileList[0].url?.toString()
     const reult =  await postSetting(values)
     console.log(reult,values);
     message.success('提交成功');
   }
-
-
 
 
 
@@ -59,13 +51,11 @@ function SystemSetting(){
      form.setFieldsValue(result.data)
      setUploadFileList(
        [
-        ...uploadFileList,
         {
           uid:'-9',
           url:result?.data?.logo
          }
        ]
-
      )
     })
   },[])
@@ -81,11 +71,11 @@ function SystemSetting(){
       >
       <ProCard>
           <ProForm
-            wrapperCol={{span:10}}
+            form={form}
             layout="horizontal"
             labelCol={{span:4}}
             onFinish={onFinish}
-            form={form}
+            wrapperCol={{span:10}}
             submitter={{
               searchConfig: {
                 submitText: '保存',
@@ -132,7 +122,7 @@ function SystemSetting(){
               value={uploadFileList}
               name="uploadlogo"
               label="网站图标"
-              max={4}
+              max={1}
               title="logo上传"
             />
             <ProFormTextArea

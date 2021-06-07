@@ -1,7 +1,7 @@
 
 export interface System{
   _id?:string,
-  logo?:string | '',
+  logo?:string,
   name?:string,
   title?:string,
   eName?:string,

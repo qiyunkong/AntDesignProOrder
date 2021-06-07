@@ -53,7 +53,7 @@ export async function getInitialState(): Promise<{
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo(); //获取当前用户
-    const menuData = await fetchMenuData(currentUser); //获取菜单
+    const menuData = await fetchMenuData(currentUser); //获取菜单 || 获取当用户的菜单
     return {
       fetchUserInfo,
       currentUser,
