@@ -1,7 +1,7 @@
 import {request} from 'umi'
 import {ProductListItem,JSONResult,PageList} from '../../types'
 
-/** 拉取分类列表的接口函数 GET /api/category */
+/** 拉取商品列表的接口函数 GET /api/product */
 export async function getProduct(params:{
     //query
     /** 当前的页码 */
@@ -10,7 +10,7 @@ export async function getProduct(params:{
     parentId?:string | '0'
 
 }, options?: { [key: string]: any }){
-    return request<PageList<ProductListItem>>('/api/category?parentId=0',{
+    return request<PageList<ProductListItem>>('/api/product',{
         method:'GET',
         params:{
             ...params
@@ -19,27 +19,36 @@ export async function getProduct(params:{
     })
 }
 
-/** 更新分类的接口函数 PUT /api/category */
+/** 获取商品信息的接口函数 Get /api/product */
+export async function getProductInfo(id:string | undefined, options?: { [key: string]: any }) {
+  return request<PageList<ProductListItem>>(`/api/product/${id}`,{
+    method:'GET',
+    ...(options || {}),
+})
+
+}
+
+/** 更新商品的接口函数 PUT /api/product */
 export async function putProduct(body:ProductListItem, options?: { [key: string]: any }){
-    return request<ProductListItem>('/api/category',{
+    return request<ProductListItem>('/api/product',{
         method:'PUT',
         data:body,
         ...(options || {}),
     })
 }
 
-/** 新建分类的接口函数 POST /api/category */
+/** 新建商品的接口函数 POST /api/product */
 export async function addProduct(body:ProductListItem, options?: { [key: string]: any }){
-    return request<JSONResult<ProductListItem>>('/api/category',{
+    return request<JSONResult<ProductListItem>>('/api/product',{
         method:'POST',
         data:body,
         ...(options || {}),
     })
 }
 
-/** 删除分类的接口函数 DELETE /api/category */
+/** 删除商品的接口函数 DELETE /api/product */
 export async function delProduct(params:{}, options?: { [key: string]: any }){
-    return request('/api/category',{
+    return request('/api/product',{
         method:'DELETE',
         params:{
             ...params

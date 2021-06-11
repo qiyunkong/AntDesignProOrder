@@ -3,6 +3,7 @@ import ProTable from '@ant-design/pro-table';
 import {Form, Button, message,DatePicker} from 'antd';
 import { CategoryListItem, MenuListItem} from '@/types';
 import {addMenu, getMenu,putMenu} from '@/services/ganfanhun';
+import ProCard from '@ant-design/pro-card';
 import { ModalForm, ProFormText,ProFormDigit } from '@ant-design/pro-form';
 import type { ProColumns ,ActionType} from '@ant-design/pro-table';
 
@@ -178,8 +179,6 @@ const MenuList: React.FC = () => {
         headerTitle={false}
         search={false}
         options={false}
-
-
         pagination={false}
       />
     );
@@ -189,23 +188,21 @@ const MenuList: React.FC = () => {
 
   return (
     <>
+    <ProCard>
     <ProTable<MenuListItem>
       columns={columns}
       rowKey="_id"
-      pagination={{
-        showQuickJumper: true,
-      }}
+      pagination={false}
       search={false}
       dateFormatter="string"
       headerTitle="菜单配置"
-      options={false}
       request={getMenu}
       expandable={{expandedRowRender}}
       params={{
-        parentId:'0'
+        parentId:'0',
       }}
       toolBarRender={() => [
-         <Button
+      <Button
          type="primary"
          key="primary"
          onClick={() => {
@@ -216,6 +213,7 @@ const MenuList: React.FC = () => {
        >
          新建数据
        </Button>,
+
       ]}
       actionRef={actionRef}
     />
@@ -230,11 +228,13 @@ const MenuList: React.FC = () => {
       visible={createModalVisible}
       onVisibleChange={handleCreateModalVisible}
       onFinish={async (value) => {
+        //保存父节点
         value.parentId = parentId
         const success = await handleAdd(value as MenuListItem);
         if (success) {
           handleCreateModalVisible(false);
           if (actionRef.current) {
+            console.log("我执行了")
             actionRef.current.reload();
           }
         }
@@ -295,7 +295,6 @@ const MenuList: React.FC = () => {
       visible={updateModalVisible}
       onVisibleChange={handleUpdateModalVisible}
       onFinish={async (value) => {
-        console.log(value)
         const success = await handleUpdate(value as MenuListItem);
         if (success) {
           handleUpdateModalVisible(false);
@@ -350,6 +349,7 @@ const MenuList: React.FC = () => {
       />
       <ProFormDigit label="序号" name="sortNo" width="md" min={1} max={10} />
     </ModalForm>
+  </ProCard>
   </>
   );
 };

@@ -22,3 +22,11 @@ export interface Product{
   status?:boolean,
   createTime?:Date
 }
+
+
+export interface CascaderItem{
+  value:string,
+  label:string
+  isLeaf:boolean,
+  children?:[]
+}

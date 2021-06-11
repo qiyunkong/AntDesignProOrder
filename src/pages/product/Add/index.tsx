@@ -1,11 +1,10 @@
-import {history} from 'umi';
 import ProCard from '@ant-design/pro-card';
 import { useState, useEffect} from 'react';
 import ImageUpload from './components/ImageUpload';
 import { message, Form, Cascader,Space} from 'antd';
 import { CategoryListItem, CascaderItem } from '@/types';
 import { PageHeaderWrapper } from '@ant-design/pro-layout'; // 布局配置
-import { addProduct, getCategory,getProductInfo} from '@/services/ganfanhun';
+import { addProduct, getCategory} from '@/services/ganfanhun';
 import ProForm, { ProFormSelect , ProFormText , ProFormList, ProFormDigit, ProFormTextArea } from '@ant-design/pro-form';
 
 
@@ -23,8 +22,27 @@ const getCascader = (data:CategoryListItem[],isLeaf:boolean) =>{
 }
 
 
+/** 递归下标 死递归 */
+const getCascaderIndex = (value:string,options:any) => {
+  if(options.length == 0) return -1;
+  //查找第一层
+  let index = options.findIndex(((item:CascaderItem)=>item.value === value));
+  //查找N层
+  if(index == -1){
+    for(let i = 0; options.length-1; i++){
+      if(options[i]?.children){
+       index = getCascaderIndex(value,options[i]?.children)
+      }
+    }
+  }else{
+    return index
+  }
+  return index
+}
 
-/**表单修改 */
+
+
+/**表单提交 */
 const onFinish = async (values:any) =>{
   console.log(values)
   values.imageList =  getImageList(values.imageList)
@@ -72,18 +90,12 @@ const ProductAdd  = () => {
 
   /** 钩子函数 */
   useEffect(()=>{
-    const id = history?.location.query?.id?.toString()
-    //获取分类
     getCategory({
       parentId:'0'
     }).then((result)=>{
       const {data} = result;
       const _options =  getCascader(data,false)
       setOptions([..._options])
-    })
-    //获取商品
-    getProductInfo(id).then((result)=>{
-      console.log(result)
     })
   },[])
 
@@ -132,7 +144,7 @@ const ProductAdd  = () => {
     <PageHeaderWrapper
     title={
       <Space>
-        商品修改
+        商品添加
       </Space>
     }
   >

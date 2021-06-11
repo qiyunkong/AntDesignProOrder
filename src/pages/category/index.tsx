@@ -5,7 +5,6 @@ import ProTable from '@ant-design/pro-table';
 import {CategoryListItem, IPage} from '@/types'
 import UpdateForm from './components/UpdateForm';
 import { PlusOutlined } from '@ant-design/icons';
-import UpdateSwitch from './components/UpdateSwitch';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, message, Drawer,Switch,Breadcrumb} from 'antd';
@@ -13,7 +12,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import {addCategory,getCategory,delCategory,putCategory,getMenu} from '@/services/ganfanhun'
+import {addCategory,getCategory,delCategory,putCategory} from '@/services/ganfanhun';
 
 
 /**
@@ -95,7 +94,7 @@ const CategoryList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 方法标记 */
   const actionRef = useRef<ActionType>();
-  const [link,setLink] = useState<CategoryListItem[]>();
+  const [link,setLink] = useState<CategoryListItem[]>([]);
   /** */
   const [currentRow, setCurrentRow] = useState<CategoryListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
@@ -209,20 +208,37 @@ const CategoryList: React.FC = () => {
     <PageContainer>
       <ProCard>
       <Breadcrumb>
-        {link?.length && (
-          link.map(({name,_id})=>{
-            return <Breadcrumb.Item onClick={()=>{
-            }}>{name}</Breadcrumb.Item>
-          })
-        )}
-        <Breadcrumb.Item onClick={()=>{
-           //设置父节点分类ID
-           setParentId('0')
+      {
+        link?.length > 0 && (
+          <Breadcrumb.Item key="shouye" onClick={()=>{
+            //设置父节点分类ID
+            setParentId('0')
+            //设置为空数组
+            setLink([])
             // 清空选中项
             if (actionRef.current) {
               actionRef.current.reload();
             }
-            }}>回退</Breadcrumb.Item>
+            }}>起始页</Breadcrumb.Item>
+        )
+      }
+      { link?.length > 0 && (
+
+        link.map(({name,_id},index)=>{
+          // console.log(name)
+          return <Breadcrumb.Item key={_id} onClick={()=>{
+            //设置父节点分类ID
+            setParentId(_id)
+            //设置连接
+            setLink(link.slice(0,index+1))
+            // 清空选中项
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+          }>{name}</Breadcrumb.Item>
+        })
+      )}
       </Breadcrumb>
       </ProCard>
 
@@ -244,25 +260,25 @@ const CategoryList: React.FC = () => {
           >
             <PlusOutlined /> 新建数据
           </Button>,
-            <Button
-              type="primary"
-              key="primary"
-              onClick={() => {
-                //显示模块框
-               // handleModalVisible(true);
-              }}
-            >
-            <PlusOutlined />导入表单
-          </Button>,
-            <Button
+          <Button
             type="primary"
             key="primary"
             onClick={() => {
               //显示模块框
-              //handleModalVisible(true);
+              // handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> 导出表单
+          <PlusOutlined />导入表单
+        </Button>,
+          <Button
+          type="primary"
+          key="primary"
+          onClick={() => {
+            //显示模块框
+            //handleModalVisible(true);
+          }}
+          >
+          <PlusOutlined /> 导出表单
           </Button>,
         ]}
         request={getCategory}
@@ -317,7 +333,7 @@ const CategoryList: React.FC = () => {
 
 
       <ModalForm
-        title="新建分类"
+        title={"新建分类"}
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}

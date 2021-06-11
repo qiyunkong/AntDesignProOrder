@@ -15,6 +15,10 @@ const serverRoutes: IRoute = {
     {
       path:'/server/product/Edit',
       component:'./product/Edit'
+    },
+    {
+      path:'/server/product/Add',
+      component:'./product/Add'
     }
   ],
 };

@@ -1,20 +1,18 @@
-import type {BasicLayoutProps, Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
+import {User} from '@/types';
 import { notification } from 'antd';
-import type { RequestConfig } from 'umi';
 import { history, Link } from 'umi';
-import RightContent from '@/components/RightContent';
+import type { RequestConfig } from 'umi';
 import Footer from '@/components/Footer';
-import type { ResponseError } from 'umi-request';
-// import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ant-design-pro/api';
-import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ganfanhun'
-import { BookOutlined, LinkOutlined } from '@ant-design/icons';
-import type { MenuDataItem } from '@ant-design/pro-layout';
+import {tokenIt} from '@/utils/authority';
 import fixMenuItemIcon from '@/utils/utils';
-import {tokenIt} from '@/utils/authority'
-import {User} from '@/types'
-// import { App,AppSettings  } from './types'
-// import { getAppSettings } from './services/app';
+import type { ResponseError } from 'umi-request';
+import { PageLoading } from '@ant-design/pro-layout';
+import RightContent from '@/components/RightContent';
+import type { MenuDataItem } from '@ant-design/pro-layout';
+import { BookOutlined, LinkOutlined } from '@ant-design/icons';
+import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ganfanhun';
+import type {BasicLayoutProps, Settings as LayoutSettings } from '@ant-design/pro-layout';
+
 
 
 
@@ -53,11 +51,12 @@ export async function getInitialState(): Promise<{
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo(); //获取当前用户
-    const menuData = await fetchMenuData(currentUser); //获取菜单 || 获取当用户的菜单
+    const menuData  = await fetchMenuData(currentUser); //获取菜单 || 获取当用户的菜单
+    //console.log(data)
     return {
       fetchUserInfo,
       currentUser,
-      menuData,
+      menuData:menuData,
       settings: {},
     };
   }

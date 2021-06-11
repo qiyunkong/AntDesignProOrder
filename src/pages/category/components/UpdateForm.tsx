@@ -41,6 +41,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         onVisibleChange={onVisibleChange}
         form={form}
     >
+        <ProFormText name="_id" hidden/>
         <ProFormText
           name="name"
           label="分类名称"

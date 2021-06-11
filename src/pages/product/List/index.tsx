@@ -3,10 +3,10 @@ import useRouter from '@/hooks/useRouter';
 import ProTable from '@ant-design/pro-table';
 import { Button, message, Drawer} from 'antd';
 import React, { useState, useRef } from 'react';
-import {CategoryListItem, IPage} from '@/types';
+import { IPage,ProductListItem} from '@/types';
 import { PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {getProduct,delCategory} from '@/services/ganfanhun';
+import {getProduct,delProduct} from '@/services/ganfanhun';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
@@ -15,11 +15,11 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: CategoryListItem[]) => {
+const handleRemove = async (selectedRows: ProductListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await delCategory({
+    await delProduct({
       id: selectedRows.map((row) => row._id),
     });
     hide();
@@ -40,11 +40,11 @@ const ProductListPage: React.FC = () => {
   /** 方法标记 */
   const actionRef = useRef<ActionType>();
   /** */
-  const [currentRow, setCurrentRow] = useState<CategoryListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<ProductListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<ProductListItem[]>([]);
 
   /** 表格规格 */
-  const columns: ProColumns<CategoryListItem,"text">[] = [
+  const columns: ProColumns<ProductListItem,"text">[] = [
     {
       title: '商品ID',
       dataIndex: '_id',
@@ -75,25 +75,29 @@ const ProductListPage: React.FC = () => {
       valueType: 'textarea',
     },
     {
+      title: "价格",
+      dataIndex: 'price',
+      sorter: true,
+      hideInForm: true,
+      renderText: (val: string) =>
+        `${val}元`,
+    },
+    {
+      title: '图片',
+      dataIndex: 'imageList',
+      key: 'image',
+      valueType: 'image',
+      search:false,
+      renderText: (val:any) =>{
+        return  `http://127.0.0.1:3001${val[0]?.imgUrl}`
+      }
+
+    },
+    {
       title: "创建时间",
       sorter: true,
       dataIndex: 'createTime',
       valueType: 'dateTime',
-    },
-    {
-      title:"是否展示",
-      dataIndex:'status',
-      hideInForm:true,
-      valueEnum:{
-        'false':{
-          text:"已关闭",
-          status:'false',
-        },
-        'true':{
-          text:"已开启",
-          status:'true',
-        }
-      },
     },
     {
       title: "操作",
@@ -103,7 +107,7 @@ const ProductListPage: React.FC = () => {
         <a
           key="config"
           onClick={() => {
-            setCurrentRow(record);
+            router.loadPage(`/server/product/Edit?id=${record._id}`)
           }}
         >
          更新
@@ -112,7 +116,7 @@ const ProductListPage: React.FC = () => {
           onClick={() => {
           }}
         >
-         查看子商品
+         删除
         </a>,
       ],
     },
@@ -121,7 +125,7 @@ const ProductListPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<CategoryListItem, IPage>
+      <ProTable<ProductListItem, IPage>
         headerTitle='查询表格'
         actionRef={actionRef}
         rowKey="_id"
@@ -133,7 +137,7 @@ const ProductListPage: React.FC = () => {
               type="primary"
               key="primary"
               onClick={() => {
-                router.loadPage("/server/product/Edit")
+                router.loadPage("/server/product/Add")
               }}
             >
             <PlusOutlined />新建商品
@@ -169,17 +173,15 @@ const ProductListPage: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="已选择" />{' '}
+              已选择{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
+              项
               &nbsp;&nbsp;
               <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="服务调用次数总计"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => 0, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
+                {/* 商品总价为{selectedRowsState.reduce((pre, item) => {
+                  console.log(pre,item)
+                  return 0
+                }, 0)}元 */}
               </span>
             </div>
           }
@@ -191,10 +193,10 @@ const ProductListPage: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage id="pages.searchTable.batchDeletion" defaultMessage="批量删除" />
+            批量删除
           </Button>
           <Button type="primary">
-            <FormattedMessage id="pages.searchTable.batchApproval" defaultMessage="批量审批" />
+            批量下架
           </Button>
         </FooterToolbar>
       )}

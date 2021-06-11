@@ -86,6 +86,8 @@
    
 5. 表格泛型不可以定义children命名规则   [解决方案](https://stackoverflow.com/questions/65890189/typeerror-data-foreach-is-not-a-function)
 
+6. 组件状态剥离
+
 
 
 ## 笔记使用
@@ -146,7 +148,13 @@ return request<API.CurrentUser>('/api/account/currentUser', {
 
 ```
 
+ant design pro  IP 端口修改  
 
+```json
+ipconfig  WLAN IP 
+"start": "cross-env UMI_ENV=dev umi dev --HOST=192.168.1.100",
+
+```
 
 [图表组件](https://v2-pro.ant.design/components/charts-cn/)
 
@@ -469,4 +477,147 @@ var indexpoll = 0;
 // }
 //  poll()
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+前端
+
+```cmd
+mkdir OrderWeb #mkdir(创建文件夹)  [文件夹名称]
+cd OrderWeb #cd(跳转目录)  [文件路径]
+npm create umi #npm(npm指令) create(创建)
+##选择 ant-design-pro
+npm install #下载依赖包
+npm start #启动项目
+```
+
+后端
+
+```cmd
+mkdir OrderWebAPI #mkdir(创建文件夹)  [文件夹名称]
+cd OrderWebAPI #cd(跳转目录)  [文件路径]
+npm init -y #npm(npm指令) 初始化 package.json
+echo. > app.js  #创建创建入口文件 编写程序
+npm install koa koa-bodyparser  mongose #npm() install(安裝) 安裝依赖包
+node app.js
+```
+
+数据库
+
+```cmd
+mkdir OrderDB #mkdir(创建文件夹)  [文件夹名称]
+mongod  --dbpath OrderDB --port 27018  #mongod() --dbpath(数据库文件夹路径) --port(服务器端口)
+```
+
+
+
+
+
+win 整体
+
+```cmd
+mkdir FinalDesign
+cd OrderWeb
+mkdir OrderWeb #mkdir(创建文件夹)  [文件夹名称]
+cd OrderWeb #cd(跳转目录)  [文件路径]
+npm create umi #npm(npm指令) create(创建)
+##选择 ant-design-pro
+npm install #下载依赖包
+npm start #启动项目
+cd ../	  #返回上級目录	
+mkdir OrderWebAPI #mkdir(创建文件夹)  [文件夹名称]
+cd OrderWebAPI #cd(跳转目录)  [文件路径]
+npm init -y #npm(npm指令) 初始化 package.json
+echo. > app.js  #创建创建入口文件 编写程序
+npm install koa koa-bodyparser  mongose #npm() install(安裝) 安裝依赖包
+node app.js #node(指令) 文件
+cd ../  #返回上級目录
+mkdir OrderDB #mkdir(创建文件夹)  [文件夹名称]
+mongod  --dbpath OrderDB --port 27018  #mongod() --dbpath(数据库文件夹路径) --port(服务器端口)
+```
+
+
+
+liunx
+
+touch
+
+```cmd
+mkdir FinalDesign
+cd OrderWeb
+mkdir OrderWeb #mkdir(创建文件夹)  [文件夹名称]
+cd OrderWeb #cd(跳转目录)  [文件路径]
+npm create umi #npm(npm指令) create(创建)
+##选择 ant-design-pro
+npm install #下载依赖包
+npm start #启动项目
+cd ../	  #返回上級目录	
+mkdir OrderWebAPI #mkdir(创建文件夹)  [文件夹名称]
+cd OrderWebAPI #cd(跳转目录)  [文件路径]
+npm init -y #npm(npm指令) 初始化 package.json
+touch app.js  #创建创建入口文件 编写程序
+npm install koa koa-bodyparser  mongose #npm() install(安裝) 安裝依赖包
+node app.js #node(指令) 文件
+cd ../  #返回上級目录
+mkdir OrderDB #mkdir(创建文件夹)  [文件夹名称]
+mongod  --dbpath OrderDB --port 27018  #mongod() --dbpath(数据库文件夹路径) --port(服务器端口)
+```
+
+
+
+
+
+环境搭建
+
+```cmd
+ #apt-get (ubuntu) yum(centOS) #快速下载安装某些东西
+  apt-get update 			#更新apt-get包的文件目录
+ # 安装nginx
+  apt-get install nginx 	#中间要按一下回车等待
+ # node 环境安装
+  apt-get install npm 		#安装npm包
+  npm i -g n 			   #全局安装n
+  n latest 				   #安装最新版本的node
+  cd  /etc/nginx/		    #nginx文件
+  vi nginx.conf
+  #退出编辑模式 
+　#按ESC键，然后：
+  #　　　 退出vi
+  # 　　　 :q!  不保存文件，强制退出vi命令
+  # 　　　 :w   保存文件，不退出vi命令
+  # 　　　 :wq  保存文件，退出vi命令  
+  #       :wq!(保存编辑强制退出)
+ #nginx 重启(启动) 
+ service nginx restart 
+```
+
+
+
+```html
+
+<ProFormSelect.SearchSelect
+          name="spec"
+          label="规格"
+          options={[
+            { label: '大份', value: 'all' },
+            { label: '中份', value: 'open' },
+            { label: '小份', value: 'closed' },
+            { label: '特大份', value: 'processing' },
+          ]}
+        />
+```
+
+
 

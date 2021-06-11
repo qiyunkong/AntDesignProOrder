@@ -5,12 +5,45 @@ import React, { useState, useRef } from 'react';
 import {RoleListItem, IPage} from '@/types';
 import { PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { Button, message, Drawer,Switch,Breadcrumb} from 'antd';
+import { Button, message, Drawer,Tree,Breadcrumb} from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import {getRole,putRole,delRole,addRole} from '@/services/ganfanhun';
+
+
+
+
+const treeData = [
+  {
+    title: 'parent 1',
+    key: '0-0',
+    children: [
+      {
+        title: 'parent 1-0',
+        key: '0-0-0',
+        disabled: true,
+        children: [
+          {
+            title: 'leaf',
+            key: '0-0-0-0',
+            disableCheckbox: true,
+          },
+          {
+            title: 'leaf',
+            key: '0-0-0-1',
+          },
+        ],
+      },
+      {
+        title: 'parent 1-1',
+        key: '0-0-1',
+        children: [{ title: <span style={{ color: '#1890ff' }}>sss</span>, key: '0-0-1-0' }],
+      },
+    ],
+  },
+];
 
 
 /**
@@ -83,6 +116,10 @@ const RoleList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+
+  /** 授权新窗口 */
+
+
   /** 删除的弹框 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 方法标记 */
@@ -94,6 +131,43 @@ const RoleList: React.FC = () => {
 
   /** 分类节点ID*/
   const [parentId,setParentId] = useState<string>('0');
+
+
+
+
+
+
+
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0']);
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    console.log('onExpand', expandedKeysValue);
+    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
+    // 如果未将autoExpandParent设置为false，则如果子级已展开，则父级不能折叠。
+    // or, you can remove all expanded children keys.
+    // 或者，可以删除所有展开的子键。
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
+  };
+
+
+  const onCheck = (checkedKeys: {
+    checked: React.Key[];
+    halfChecked: React.Key[];
+  }, info: any) => {
+    console.log('onCheck', checkedKeys, info);
+  };
+
+
+  //选中
+  const onSelect = (selectedKeys: React.Key[], info: any) => {
+    console.log('selected', selectedKeys, info);
+  };
+
+
 
 
     // useEffect(()=>{
@@ -174,25 +248,6 @@ const RoleList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProCard>
-      <Breadcrumb>
-        {link?.length && (
-          link.map(({name,_id})=>{
-            return <Breadcrumb.Item onClick={()=>{
-            }}>{name}</Breadcrumb.Item>
-          })
-        )}
-        <Breadcrumb.Item onClick={()=>{
-           //设置父节点分类ID
-           setParentId('0')
-            // 清空选中项
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-            }}>回退</Breadcrumb.Item>
-      </Breadcrumb>
-      </ProCard>
-
       <ProTable<RoleListItem>
         headerTitle='查询表格'
         actionRef={actionRef}
@@ -253,18 +308,8 @@ const RoleList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="已选择" />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
+              已选择<a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>项
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="服务调用次数总计"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => 0, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
-              </span>
             </div>
           }
         >
@@ -272,13 +317,18 @@ const RoleList: React.FC = () => {
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
+              //重新渲染
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage id="pages.searchTable.batchDeletion" defaultMessage="批量删除" />
+            批量删除
           </Button>
-          <Button type="primary">
-            <FormattedMessage id="pages.searchTable.batchApproval" defaultMessage="批量审批" />
+          <Button type="primary"
+            onClick={async ()=>{
+
+            }}
+          >
+            批量审批
           </Button>
         </FooterToolbar>
       )}
@@ -313,7 +363,22 @@ const RoleList: React.FC = () => {
           name="name"
         />
         <ProFormTextArea label="描述" width="md" name="desc" />
+        {/* https://ant.design/components/tree-cn/#API  */}
+        <Tree
+          checkable
+          defaultExpandedKeys={['0-0-0', '0-0-1']}
+          defaultSelectedKeys={['0-0-0', '0-0-1']}
+          defaultCheckedKeys={['0-0-0', '0-0-1']}
+          onSelect={onSelect}
+          onCheck={onCheck}
+          treeData={treeData}
+        />
       </ModalForm>
+
+      <ModalForm>
+
+      </ModalForm>
+
 
       <Drawer
         width={600}
