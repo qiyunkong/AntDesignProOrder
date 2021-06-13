@@ -7,7 +7,6 @@ export interface System{
   eName?:string,
   webDesc?:string,
   staticSrc?:string
-  menuRoute?:[]
 }
 
 

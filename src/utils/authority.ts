@@ -6,6 +6,7 @@ export function setAuthority(payload:any) {
 
 export const getAuthority = () => localStorage.getItem('token')
 
+
 export const tokenIt:RequestInterceptor = (
     url:string,
     options:RequestOptionsInit

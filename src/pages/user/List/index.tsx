@@ -1,11 +1,12 @@
-import { Button} from 'antd';
-import React,{useState} from 'react';
+import { Button,message} from 'antd';
+import React,{useState,useRef} from 'react';
 import {UserListItem} from '@/types';
-import { PlusOutlined } from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons';
+import {getUser,getRole,addUser,delUser,putUser} from '@/services/ganfanhun';
+import type { ProColumns , ActionType} from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-form';
-import Mock from 'mockjs';
+import { constant, result } from 'lodash';
 
 export const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -14,6 +15,89 @@ export const waitTime = (time: number = 100) => {
     }, time);
   });
 };
+
+//角色格式转换
+const formatRoleList = (roles:any) =>{
+  roles = roles.map(({_id,name}:any)=>({
+    key:_id,
+    label:name,
+    value:_id,
+  }))
+  return roles
+}
+
+
+
+/**
+ * 添加节点
+ *
+ * @param fields
+ */
+ const handleAdd = async (fields: UserListItem) => {
+
+  const hide = message.loading('正在添加');
+  let _content:any = ""
+  try {
+    const data =  await addUser({ ...fields });
+    // _content = data.content
+    // console.log(_content)
+    hide();
+    message.success('添加成功');
+    return true;
+  } catch (error) {
+    hide();
+    // console.log(_content)
+    message.error(_content);
+    return false;
+  }
+};
+
+/**
+ * 更新节点 异步函数
+ *
+ * @param fields
+ */
+const handleUpdate = async (fields: UserListItem) => {
+  const hide = message.loading('正在配置');
+  try {
+    await putUser({...fields});
+    hide();
+    message.success('更新成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('更新失败请重试！');
+    return false;
+  }
+};
+
+/**
+ * 删除节点
+ *
+ * @param selectedRows
+ */
+const handleRemove = async (selectedRows: UserListItem[]) => {
+  const hide = message.loading('正在删除');
+  if (!selectedRows) return true;
+  try {
+    await delUser({
+      id: selectedRows.map((row) => row._id),
+    });
+    hide();
+    message.success('删除成功，即将刷新');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
+
+
+
+
+
 
 
 const columns: ProColumns<UserListItem>[] = [
@@ -43,7 +127,7 @@ const columns: ProColumns<UserListItem>[] = [
   },
   {
     title: '角色',
-    dataIndex: 'roleId',
+    dataIndex: 'roleName',
   },
   {
     title: '操作',
@@ -73,6 +157,8 @@ const columns: ProColumns<UserListItem>[] = [
 const UserListPage:React.FC = () => {
     /** 新建窗口的弹窗 */
     const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+    /** 方法标记 */
+    const actionRef = useRef<ActionType>();
 
 
   return (
@@ -81,6 +167,7 @@ const UserListPage:React.FC = () => {
           columns={columns}
           rowKey="_id"
           headerTitle="样式类"
+          actionRef={actionRef}
           toolBarRender={() => [
             <Button
               type="primary"
@@ -93,14 +180,8 @@ const UserListPage:React.FC = () => {
               <PlusOutlined /> 新建数据
             </Button>,
           ]}
+          request={getUser}
         />
-
-
-
-
-
-
-
 
 
         <ModalForm
@@ -112,7 +193,14 @@ const UserListPage:React.FC = () => {
           onVisibleChange={handleModalVisible}
           labelCol={{span:4}}
           onFinish={async (value) => {
-            console.log(value)
+            const success = await handleAdd(value as UserListItem);
+            if (success) {
+              handleModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+
           }}
         >
           <ProFormText
@@ -168,13 +256,11 @@ const UserListPage:React.FC = () => {
             showSearch
             key="roleId"
             request={async ({ keyWords }) => {
-              await waitTime(1000);
-              return [
-                { key:'1', label: '厨师', value: 'all' },
-                { key:'2',label: '老板', value: 'open' },
-                { key:'3',label: '服务员', value: 'closed' },
-                { key:'4',label: '管理员', value: 'processing' },
-              ]
+              //请求全部角色
+              const {data} =  await getRole({});
+              const _data = formatRoleList(data)
+              //格式转化
+              return _data;
             }}
             width="md"
             placeholder="Please select a country"

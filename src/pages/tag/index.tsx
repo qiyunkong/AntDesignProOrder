@@ -95,9 +95,6 @@ const TagList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TagListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TagListItem[]>([]);
 
-  /** 分类节点ID*/
-  const [parentId,setParentId] = useState<string>('0');
-
   
   //表单对象
   const [form] = Form.useForm();
@@ -272,7 +269,6 @@ const TagList: React.FC = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          value.parentId = parentId
           const success = await handleAdd(value as TagListItem);
           if (success) {
             handleModalVisible(false);

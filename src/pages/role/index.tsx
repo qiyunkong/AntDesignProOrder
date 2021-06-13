@@ -1,49 +1,16 @@
-import {  FormattedMessage } from 'umi';
-import ProCard from '@ant-design/pro-card';
+import {RoleListItem} from '@/types';
 import ProTable from '@ant-design/pro-table';
-import React, { useState, useRef } from 'react';
-import {RoleListItem, IPage} from '@/types';
 import { PlusOutlined } from '@ant-design/icons';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import {useModel} from 'umi';
 import { Button, message, Drawer,Tree,Form} from 'antd';
+import React, { useState, useRef,useEffect} from 'react';
+import ProDescriptions from '@ant-design/pro-descriptions';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import {getRole,putRole,delRole,addRole} from '@/services/ganfanhun';
+import {getRole,putRole,delRole,addRole,getMenuTree} from '@/services/ganfanhun';
 
-
-
-
-const treeData = [
-  {
-    title: 'parent 1',
-    key: '0-0',
-    children: [
-      {
-        title: 'parent 1-0',
-        key: '0-0-0',
-        disabled: true,
-        children: [
-          {
-            title: 'leaf',
-            key: '0-0-0-0',
-            disableCheckbox: true,
-          },
-          {
-            title: 'leaf',
-            key: '0-0-0-1',
-          },
-        ],
-      },
-      {
-        title: 'parent 1-1',
-        key: '0-0-1',
-        children: [{ title: <span style={{ color: '#1890ff' }}>sss</span>, key: '0-0-1-0' }],
-      },
-    ],
-  },
-];
 
 
 /**
@@ -110,65 +77,67 @@ const handleRemove = async (selectedRows: RoleListItem[]) => {
 };
 
 
+
+
+
+
 const RoleList: React.FC = () => {
 
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  /** 授权新窗口 待开发 */
-
-
+  /** 授权新窗口 */
+  const [authorizationVisble,handleAuthorizationVisble] = useState<boolean>(false);
   /** 删除的弹框 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 方法标记 */
   const actionRef = useRef<ActionType>();
-  const [link,setLink] = useState<RoleListItem[]>();
   /** */
   const [currentRow, setCurrentRow] = useState<RoleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<RoleListItem[]>([]);
 
-  /** 分类节点ID*/
-  const [parentId,setParentId] = useState<string>('0');
+  /** treeData */
+  const [treeData,setTreeData] = useState([])
+  /** 授权数组 */
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
+
+  //获取初始值
+  const { initialState } = useModel('@@initialState');
 
 
 
 
 
+  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  // const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+
+  useEffect(()=>{
+    //请求菜单
+    getMenuTree().then((result)=>{
+      setTreeData(result);
+    })
+  },[])
 
 
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0']);
-  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
-  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
-  const onExpand = (expandedKeysValue: React.Key[]) => {
-    console.log('onExpand', expandedKeysValue);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // 如果未将autoExpandParent设置为false，则如果子级已展开，则父级不能折叠。
-    // or, you can remove all expanded children keys.
-    // 或者，可以删除所有展开的子键。
-    setExpandedKeys(expandedKeysValue);
-    setAutoExpandParent(false);
+  const onCheck = (checkedKeys:React.Key[], info: any) => {
+    console.log('onCheck',"点中多选==》", checkedKeys, info);
+    setCheckedKeys(checkedKeys)
+    console.log(checkedKeys)
   };
 
 
-  const onCheck = (checkedKeys: {
-    checked: React.Key[];
-    halfChecked: React.Key[];
-  }, info: any) => {
-    console.log('onCheck', checkedKeys, info);
-  };
-
-
-  //选中
+  //选中标题
   const onSelect = (selectedKeys: React.Key[], info: any) => {
-    console.log('selected', selectedKeys, info);
+    //console.log('selected',"点中文字==》", selectedKeys, info);
   };
 
 
   //表单对象
-  const [form] = Form.useForm();
+  const [formUpdate] = Form.useForm();
+  const [formAuthor] = Form.useForm();
 
 
   /** 表格规格 */
@@ -215,7 +184,6 @@ const RoleList: React.FC = () => {
       sorter: true,
       search:false,
       dataIndex: 'authName',
-      valueType: 'dateTime',
     },
     {
       title: "操作",
@@ -228,14 +196,19 @@ const RoleList: React.FC = () => {
             handleUpdateModalVisible(true);
             setCurrentRow(record);
             //初始化模块框的值
-            form.setFieldsValue(record);
+            console.log(record);
+            formUpdate.setFieldsValue(record);
           }}
         >
          更新
         </a>,
         <a key="subscribeAlert"
           onClick={() => {
-            console.log("授权")
+            //生成Dom
+            handleAuthorizationVisble(true);
+            //初始化模块框的值
+            formAuthor.setFieldsValue(record);
+            setCheckedKeys(record.menus)
           }}
         >
          授权
@@ -339,7 +312,6 @@ const RoleList: React.FC = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          value.parentId = parentId
           const success = await handleAdd(value as RoleListItem);
           if (success) {
             handleModalVisible(false);
@@ -362,24 +334,14 @@ const RoleList: React.FC = () => {
           name="name"
         />
         <ProFormTextArea label="描述" width="md" name="desc" />
-        {/* https://ant.design/components/tree-cn/#API  */}
-        <Tree
-          checkable
-          defaultExpandedKeys={['0-0-0', '0-0-1']}
-          defaultSelectedKeys={['0-0-0', '0-0-1']}
-          defaultCheckedKeys={['0-0-0', '0-0-1']}
-          onSelect={onSelect}
-          onCheck={onCheck}
-          treeData={treeData}
-        />
       </ModalForm>
-
-          
+      
       <ModalForm
+        key="1"
         title={`修改角色`}
         width="500px"
         layout="horizontal"
-        form={form}
+        form={formUpdate}
         labelCol={{span:4}}
         wrapperCol={{span:20}}
         visible={updateModalVisible}
@@ -387,14 +349,16 @@ const RoleList: React.FC = () => {
         onFinish={async (value) => {
           const success = await handleUpdate(value as RoleListItem);
           if (success) {
+            console.log("修改角色===>",success)
+            console.log(123456)
             handleUpdateModalVisible(false);
             if (actionRef.current) {
+              handleUpdateModalVisible(false);
               actionRef.current.reload();
             }
           }
         }}
         >
-
       <ProFormText name="_id" hidden/>
       <ProFormText
         label="角色名称"
@@ -410,6 +374,48 @@ const RoleList: React.FC = () => {
       />
       <ProFormTextArea label="描述" width="md" name="desc" />
     </ModalForm>
+        
+    <ModalForm
+        key="2"
+        title={`角色授权`}
+        width="500px"
+        layout="horizontal"
+        form={formAuthor}
+        labelCol={{span:4}}
+        wrapperCol={{span:20}}
+        visible={authorizationVisble}
+        onVisibleChange={handleAuthorizationVisble}
+        onFinish={async (value) => {
+          //权限赋值
+          value.menus = checkedKeys;
+          //修改授权人
+          value.authName = initialState?.currentUser?.nickName
+          //修改时间
+          value.authTime = Date.now()
+          const success = await handleUpdate(value as RoleListItem);
+          if (success) {
+            console.log("角色授权===>",success)
+            handleAuthorizationVisble(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        >
+        <ProFormText name="_id" hidden/>
+        <ProFormText name="authName" hidden/>
+        <ProFormText label="角色名称" width="md" name="name" disabled />
+          <Tree
+          checkable
+          // defaultExpandedKeys={['0-0-0', '0-0-1']}
+          // defaultSelectedKeys={['0-0-0', '0-0-1']}
+          defaultCheckedKeys={checkedKeys}
+          onSelect={onSelect}
+          onCheck={onCheck}
+          treeData={treeData}
+        />
+      </ModalForm>  
+
 
 
       <Drawer

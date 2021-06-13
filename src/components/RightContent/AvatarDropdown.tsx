@@ -6,6 +6,7 @@ import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { outLogin } from '@/services/ant-design-pro/api';
+import {setAuthority} from '@/utils/authority'
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -16,6 +17,7 @@ export type GlobalHeaderRightProps = {
  */
 const loginOut = async () => {
   await outLogin();
+  setAuthority('');
   const { query = {}, pathname } = history.location;
   const { redirect } = query;
   // Note: There may be security issues, please note
@@ -66,8 +68,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     return loading;
   }
 
-  const { currentUser } = initialState;
-
+  const { currentUser,appSettings } = initialState;
   if (!currentUser || !currentUser.nickName) {
     return loading;
   }
@@ -97,7 +98,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar || "http://mt-static.mangxu.cn/Avatar/default.png"} alt="avatar" />
+        <Avatar size="small" className={styles.avatar} src={`${appSettings?.staticSrc}${currentUser.avatar||'/avatar/default.svg'}`} alt="avatar" />
         <span className={`${styles.name} anticon`}>{currentUser.nickName}</span>
       </span>
     </HeaderDropdown>

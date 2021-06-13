@@ -1,4 +1,4 @@
-import {User} from '@/types';
+import { User, System } from '@/types';
 import { notification } from 'antd';
 import { history, Link } from 'umi';
 import type { RequestConfig } from 'umi';
@@ -10,7 +10,7 @@ import { PageLoading } from '@ant-design/pro-layout';
 import RightContent from '@/components/RightContent';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
-import { currentUser as queryCurrentUser ,fetchMenuData } from './services/ganfanhun';
+import { currentUser as queryCurrentUser ,fetchMenuData,getSetting } from './services/ganfanhun';
 import type {BasicLayoutProps, Settings as LayoutSettings } from '@ant-design/pro-layout';
 
 
@@ -34,6 +34,7 @@ export async function getInitialState(): Promise<{
   currentUser?: User;
   menuData?: MenuDataItem[];
   fetchUserInfo?: () => Promise<User| undefined>;
+  appSettings?:System
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -47,23 +48,27 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  // const appSettings = await getAppSettings(); //获取配置
+  const {data} = await getSetting(); //获取网站配置
+  console.log(data);
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo(); //获取当前用户
     const menuData  = await fetchMenuData(currentUser); //获取菜单 || 获取当用户的菜单
+    console.log("===>",menuData)
     //console.log(data)
     return {
       fetchUserInfo,
       currentUser,
       menuData:menuData,
       settings: {},
+      appSettings:data
     };
   }
   return {
     fetchUserInfo,
     menuData: [],
     settings: {},
+    appSettings:data
   };
 }
 

@@ -47,3 +47,14 @@ export async function delRole(params:{}, options?: { [key: string]: any }){
     })
 }
 
+
+/** 获取当前的角色授权菜单 GET /api/role/tree/data */
+export async function getMenuTree(options?: { [key: string]: any }) {
+    return request<API.MenuData>("/api/role/tree/data",{
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        ...(options || {}),
+    })
+}
