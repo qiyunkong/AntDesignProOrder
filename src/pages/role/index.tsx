@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 import {RoleListItem, IPage} from '@/types';
 import { PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { Button, message, Drawer,Tree,Breadcrumb} from 'antd';
+import { Button, message, Drawer,Tree,Form} from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
@@ -114,10 +114,9 @@ const RoleList: React.FC = () => {
 
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /** 分布更新窗口的弹窗 */
+  /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
-  /** 授权新窗口 */
+  /** 授权新窗口 待开发 */
 
 
   /** 删除的弹框 */
@@ -168,11 +167,9 @@ const RoleList: React.FC = () => {
   };
 
 
+  //表单对象
+  const [form] = Form.useForm();
 
-
-    // useEffect(()=>{
-    //   actionRef.current?.reload()
-    // },[parentId])
 
   /** 表格规格 */
   const columns: ProColumns<RoleListItem,"text">[] = [
@@ -230,6 +227,8 @@ const RoleList: React.FC = () => {
           onClick={() => {
             handleUpdateModalVisible(true);
             setCurrentRow(record);
+            //初始化模块框的值
+            form.setFieldsValue(record);
           }}
         >
          更新
@@ -264,17 +263,17 @@ const RoleList: React.FC = () => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> 新建数据
+          <PlusOutlined /> 新建数据
           </Button>,
             <Button
               type="primary"
               key="primary"
               onClick={() => {
                 //显示模块框
-               // handleModalVisible(true);
+                // handleModalVisible(true);
               }}
             >
-            <PlusOutlined />导入表单
+          <PlusOutlined />导入表单
           </Button>,
             <Button
             type="primary"
@@ -283,21 +282,21 @@ const RoleList: React.FC = () => {
               //显示模块框
               //handleModalVisible(true);
             }}
-          >
-            <PlusOutlined /> 导出表单
-          </Button>,
-        ]}
-        request={getRole}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-        pagination={{
-          pageSize: 5,
-        }}
-      />
+        >
+          <PlusOutlined /> 导出表单
+        </Button>,
+      ]}
+      request={getRole}
+      columns={columns}
+      rowSelection={{
+        onChange: (_, selectedRows) => {
+          setSelectedRows(selectedRows);
+        },
+      }}
+      pagination={{
+        pageSize: 5,
+      }}
+    />
 
 
 
@@ -375,9 +374,42 @@ const RoleList: React.FC = () => {
         />
       </ModalForm>
 
-      <ModalForm>
+          
+      <ModalForm
+        title={`修改角色`}
+        width="500px"
+        layout="horizontal"
+        form={form}
+        labelCol={{span:4}}
+        wrapperCol={{span:20}}
+        visible={updateModalVisible}
+        onVisibleChange={handleUpdateModalVisible}
+        onFinish={async (value) => {
+          const success = await handleUpdate(value as RoleListItem);
+          if (success) {
+            handleUpdateModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        >
 
-      </ModalForm>
+      <ProFormText name="_id" hidden/>
+      <ProFormText
+        label="角色名称"
+        rules={[
+          {
+            required: true,
+            message:"角色名称为必填项",
+          },
+        ]}
+
+        width="md"
+        name="name"
+      />
+      <ProFormTextArea label="描述" width="md" name="desc" />
+    </ModalForm>
 
 
       <Drawer

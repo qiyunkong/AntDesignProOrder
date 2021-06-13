@@ -2,7 +2,7 @@ import {useState,useEffect} from 'react';
 import {  ProFormUploadButton } from '@ant-design/pro-form';
 const ImageUpload = (props: any,ref:any)=> {
 
-  const {max,title,label,name} = props;
+  const {max,title,label,name,value} = props;
 
 
 
@@ -21,7 +21,8 @@ const ImageUpload = (props: any,ref:any)=> {
       })
       setFileList(newFileList)
     }
-  }, [props])
+
+  }, [value]) //监听value
 
   //上传事件
   const handleChange = ({ file, fileList }: any) => {

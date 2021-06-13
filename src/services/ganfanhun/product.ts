@@ -21,7 +21,7 @@ export async function getProduct(params:{
 
 /** 获取商品信息的接口函数 Get /api/product */
 export async function getProductInfo(id:string | undefined, options?: { [key: string]: any }) {
-  return request<PageList<ProductListItem>>(`/api/product/${id}`,{
+  return request<JSONResult<ProductListItem>>(`/api/product/${id}`,{
     method:'GET',
     ...(options || {}),
 })

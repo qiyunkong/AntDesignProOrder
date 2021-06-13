@@ -5,7 +5,7 @@ import ImageUpload from './components/ImageUpload';
 import { message, Form, Cascader,Space} from 'antd';
 import { CategoryListItem, CascaderItem } from '@/types';
 import { PageHeaderWrapper } from '@ant-design/pro-layout'; // 布局配置
-import { addProduct, getCategory,getProductInfo} from '@/services/ganfanhun';
+import { addProduct, getCategory,getProductInfo,putProduct} from '@/services/ganfanhun';
 import ProForm, { ProFormSelect , ProFormText , ProFormList, ProFormDigit, ProFormTextArea } from '@ant-design/pro-form';
 
 
@@ -22,6 +22,19 @@ const getCascader = (data:CategoryListItem[],isLeaf:boolean) =>{
   return options
 }
 
+const getCascaderChild = (data:CategoryListItem[],isLeaf:boolean) =>{
+  const options = data.map((item:CategoryListItem)=>{
+    return {
+      value:item._id,
+      label:item.name,
+      isLeaf,
+      children:[]
+    }
+  })
+  return options
+}
+
+
 
 
 /**表单修改 */
@@ -29,13 +42,13 @@ const onFinish = async (values:any) =>{
   console.log(values)
   values.imageList =  getImageList(values.imageList)
   console.log(values.imageList )
-  const reult =  await addProduct(values)
+  const reult =  await putProduct(values)
   console.log(reult,values);
   message.success('提交成功');
 }
 
 
-/** 图片数组格式 */
+/** 上传图片数组格式 */
 const getImageList = (fileList:any)=>{
   fileList = fileList.map((item:any)=>{
     let {imgUrl} = item;
@@ -44,16 +57,52 @@ const getImageList = (fileList:any)=>{
   return fileList
 }
 
+/** 初始图片数组格式转化 */
+const formatImageList = (fileList:any)=>{
+  fileList = fileList.map((file:any)=>{
+    return {
+      uid:file.uid,
+      url:file.imgUrl
+    }
+  })
+  return fileList
+}
 
-
+/** 递归查询子节点  */
+const recursiveChildren = async (targetOption:any,ids:any,i:number) => {
+  if(ids.length === i) return targetOption;
+  //拿出下一个树杈的id
+  let id  = ids[i];
+  //请求子叶
+  const {data}  = await getCategory({
+    parentId:ids[i-1]
+  })
+  console.log(i,data)
+  //格式化
+  const _data = getCascaderChild(data,false) 
+  //不是最后一个元素 是否达道倒数第二个元素
+  if(id!=(ids.length-2)){
+    //通过id找出对应的树杈
+    let _targetOption = _data.find((item:any)=>item.value == id);
+    //通过id找出对应的树杈下标
+    const index = _data.findIndex((item:any)=>item.value===_targetOption?.value);
+    if(index != -1){  //查到就继续执行
+      _data[index].children = await recursiveChildren( _data[index],ids,i++);
+      targetOption.children = _data;
+    }else{
+      return targetOption;
+    }
+  }
+  return targetOption;
+}
+   
 
 
 
 const ProductAdd  = () => {
   /** 设置内容 */
   const [stateValue, setStateValue] = useState({});
-  /** 图片列表列 */
-  const [uploadFileList,setUploadFileList] = useState<FileList[]>([]);
+  
   /** 分类数组 */
   const [options, setOptions] = useState<CascaderItem[]>([]);
   /** 标签的数组 */
@@ -68,11 +117,18 @@ const ProductAdd  = () => {
       ]
     }
   ])
+  /** 图片列表列 */
+  const [uploadFileList,setUploadFileList] = useState<FileList[]>([]);
 
+
+
+
+
+  /** 表单对象 */
+  const [form] = Form.useForm();
 
   /** 钩子函数 */
   useEffect(()=>{
-    const id = history?.location.query?.id?.toString()
     //获取分类
     getCategory({
       parentId:'0'
@@ -80,10 +136,18 @@ const ProductAdd  = () => {
       const {data} = result;
       const _options =  getCascader(data,false)
       setOptions([..._options])
-    })
+    })  
+  },[])
+
+  useEffect(()=>{
+    const id = history?.location.query?.id?.toString()
     //获取商品
     getProductInfo(id).then((result)=>{
-      console.log(result)
+      console.log(result.data)
+      form.setFieldsValue(result.data)
+      const imageList = formatImageList(result.data?.imageList)
+      setUploadFileList(imageList)
+      //cascaderChild(result.data?.categoryId)
     })
   },[])
 
@@ -93,6 +157,42 @@ const ProductAdd  = () => {
   const onChange = (value:any, selectedOptions:any) => {
     console.log('onChange===>',value, selectedOptions);
   };
+
+
+
+  //初始化页面 queryChild
+  const cascaderChild = async (ids:any) => {
+    //找父节点
+    const targetOption = options.find(item=>item.value===ids[0])
+    //找出index
+    const index = options.findIndex(item=>item.value===targetOption?.value)
+    //修改好的
+    let _targetOption:any = recursiveChildren(targetOption,ids,1)
+    let _options = options;
+    _options[index] = _targetOption;
+    console.log(_targetOption)    
+    //更新DOM
+    setOptions([..._options])
+    
+
+    //找父节点
+    // const targetOption = options.find(item=>item.value===pCategoryId)
+    // //找出index
+    // const index = options.findIndex(item=>item.value===targetOption.value)
+    // const result = await getCategory(targetOption.value)
+    // let {data,status} = result
+    // if(status===0){ //如果获取到二级分类
+    //   // data = this.formateData(data,false)
+    //   targetOption.children = this.getCascader(data,false)
+    // }else{  //如果没有获取到二级分类 则该一级分类就是叶子
+    //   targetOption.isLeaf = true;
+    // }
+    // this.setState({options})
+  }
+
+
+
+
 
   /** 加载数据 */
   const loadData = async (selectedOptions:any) => {
@@ -117,6 +217,7 @@ const ProductAdd  = () => {
       targetOption.isLeaf = true;
       //关闭Loading
       targetOption.loading = false;
+      message.warning(`${targetOption.label}没有子分类`);
 
     }
     //更新DOM
@@ -138,11 +239,14 @@ const ProductAdd  = () => {
   >
     <ProCard>
      <ProForm
+        form={form}
         wrapperCol={{span:10}}
         layout="horizontal"
         labelCol={{span:4}}
         onFinish={onFinish}
+
       >
+        <ProFormText name="_id" hidden/>
         <ProFormText
           label="商品名称"
           name="name"
@@ -187,7 +291,7 @@ const ProductAdd  = () => {
         </ProFormList>
         <ImageUpload
           onChange={(fileList:any)=>{
-            console.log(fileList)
+            console.log("===>",fileList)
             fileList = fileList.map((file:any)=>{
               return {
                 uid:file.uid,

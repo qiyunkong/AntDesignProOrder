@@ -4,7 +4,7 @@ export interface ProductListItem{
   _id:string,
   name:string,
   desc?:string,
-  price:string,
+  price:number,
   imageList?:[],
   createTime?:Date,
   categoryId?:string,
@@ -28,5 +28,5 @@ export interface CascaderItem{
   value:string,
   label:string
   isLeaf:boolean,
-  children?:[]
+  children?:[] 
 }

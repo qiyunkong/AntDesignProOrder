@@ -1,4 +1,3 @@
-import {  FormattedMessage } from 'umi';
 import useRouter from '@/hooks/useRouter';
 import ProTable from '@ant-design/pro-table';
 import { Button, message, Drawer} from 'antd';
