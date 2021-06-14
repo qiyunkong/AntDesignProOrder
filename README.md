@@ -619,5 +619,71 @@ mongod  --dbpath OrderDB --port 27018  #mongod() --dbpath(数据库文件夹路�
         />
 ```
 
+```js
+{
+  request: {
+    method: 'GET',
+    url: '/api/product?current=1&pageSize=5',
+    header: {
+      'accept-language': 'zh-CN,zh;q=0.9',
+      'accept-encoding': 'gzip, deflate',
+      referer: 'http://192.168.19.1:8000/server/product',
+      accept: '*/*',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTM0YmU3ZDI0MWM1Mzg4NDNhYWUwMSIsImlhdCI6MTYyMzQ4NTA4OCwiZXhwIjoxNjIzNDg4Njg4fQ.6SlPlFGigKcskOWvosrdAwcHyBG7-AE9Be3JJIKG7lM',
+      connection: 'close',
+      host: '127.0.0.1:3001'
+    }
+  },
+  response: {
+    status: 404,
+    message: 'Not Found',
+    header: [Object: null prototype] {}
+  },
+  app: { subdomainOffset: 2, proxy: false, env: 'development' },
+  originalUrl: '/api/product?current=1&pageSize=5',
+  req: '<original node req>',
+  res: '<original node res>',
+  socket: '<original node socket>'
+}
 
+///1
+
+
+{
+  request: {
+    method: 'GET',
+    url: '/api/product?current=1&pageSize=5',
+    header: {
+      'accept-language': 'zh-CN,zh;q=0.9',
+      'accept-encoding': 'gzip, deflate',
+      referer: 'http://192.168.19.1:8000/server/product',
+      accept: '*/*',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTM0YmU3ZDI0MWM1Mzg4NDNhYWUwMSIsImlhdCI6MTYyMzQ4NTA4OCwiZXhwIjoxNjIzNDg4Njg4fQ.6SlPlFGigKcskOWvosrdAwcHyBG7-AE9Be3JJIKG7lM',
+      connection: 'close',
+      host: '127.0.0.1:3001'
+    }
+  },
+  response: {
+    status: 200,
+    message: 'OK',
+    header: [Object: null prototype] {
+      'content-type': 'application/json; charset=utf-8'
+    }
+  },
+  app: { subdomainOffset: 2, proxy: false, env: 'development' },
+  originalUrl: '/api/product?current=1&pageSize=5',
+  req: '<original node req>',
+  res: '<original node res>',
+  socket: '<original node socket>'
+}
+
+```
+
+点击事件
+
+```
+https://www.aliyue.net/10693.html
+```
 

@@ -8,6 +8,10 @@ const modelRoutes: IRoute = {
       path: '/schema/:view',
       component: './schema/View',
     },
+    {
+      path: '/schema/:view/add',
+      component: './schema/View/add',
+    },
   ],
 };
 

@@ -30,6 +30,7 @@ const defaultData: TableSourceType[] = new Array(1).fill(1).map((_, index) => {
  * @param fields
  */
  const handleAdd = async (fields: SchemaDva<TableSourceType>) => {
+  console.log("handleAdd====>",fields);
   const hide = message.loading('正在添加');
   try {
     const result =  await addSchema({ ...fields });
@@ -43,30 +44,6 @@ const defaultData: TableSourceType[] = new Array(1).fill(1).map((_, index) => {
     return false;
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -183,10 +160,6 @@ const  SchemaAdd = () => {
           text: 'date',
           status: 'date',
         },
-        input: {
-          text: 'input',
-          status: 'input',
-        },
         textarea: {
           text:'textarea',
           status:'textarea'
@@ -264,9 +237,8 @@ const  SchemaAdd = () => {
               nameDva:formSource?.nameDva,
               dva:[...dataSource],
             }
-            const data =  await handleAdd(field);
-            console.log(data,"模型返回");
-            message.success('提交成功');
+            await handleAdd(field);
+            return false;
           }}
           formProps={{
             validateMessages: {
@@ -278,6 +250,7 @@ const  SchemaAdd = () => {
           name="base"
           title="创建模型"
           onFinish={async (values:FormSourceType) => {
+            //这里判断模型是否存在 get api/model
             console.log(values)
             setFormSource(values)
             await waitTime(2000);
@@ -409,20 +382,6 @@ const  SchemaAdd = () => {
             />
           </ProFormGroup>
         </ProFormList>
-        {/* <ProFormSelect
-          label="选择展示的字段"
-          rules={[
-            {
-              required: false,
-            },
-          ]}
-          width="md"
-          initialValue="TestId"
-          options={[
-            { value: 'TestId', label: '字段1'  },
-            { value: 'TableId', label: '字段2' },
-          ]}
-        /> */}
         <ProFormSelect
           label="是否为搜索项"
           width="md"

@@ -9,7 +9,8 @@ import { Button, message, Drawer} from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import {getCategory,delCategory} from '@/services/ganfanhun'
+import {getCategory,delCategory} from '@/services/ganfanhun';
+import { useEffect } from 'react';
 
 
 
@@ -37,15 +38,23 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
 
 
 const CategoryList: React.FC = () => {
-
   /** 删除的弹框 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 方法标记 */
   const actionRef = useRef<ActionType>();
-
   /** 标记现选择的行 */
   const [currentRow, setCurrentRow] = useState<CategoryListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
+
+
+  /** 生命周期函数 */
+  useEffect(()=>{
+    
+
+  })
+
+
+
 
 
   /** 表格规格数据 */
@@ -72,6 +81,7 @@ const CategoryList: React.FC = () => {
 
   return (
     <PageContainer>
+      
       <ProTable
         headerTitle='查询表格'
         actionRef={actionRef}
@@ -84,7 +94,7 @@ const CategoryList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              //
+              //条件到模型页面
               console.log("链接跳转")
             }}
           >
