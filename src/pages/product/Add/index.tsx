@@ -160,7 +160,7 @@ const ProductAdd  = () => {
           name="name"
           rules={[{required:true,message:'请填写商品名称'}]}
         />
-        <ProFormDigit label="商品价格" name="price" min={1} max={10} />
+        <ProFormDigit label="商品价格" name="price" min={1} max={100} />
         <Form.Item
           label='商品分类'
           name="categoryId"

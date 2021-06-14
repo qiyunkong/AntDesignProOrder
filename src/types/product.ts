@@ -7,7 +7,7 @@ export interface ProductListItem{
   price:number,
   imageList?:[],
   createTime?:Date,
-  categoryId?:string,
+  categoryId?:[],
 }
 
 export interface ProductParams extends IPage {

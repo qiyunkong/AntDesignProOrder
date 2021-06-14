@@ -5,7 +5,7 @@ import ImageUpload from './components/ImageUpload';
 import { message, Form, Cascader,Space} from 'antd';
 import { CategoryListItem, CascaderItem } from '@/types';
 import { PageHeaderWrapper } from '@ant-design/pro-layout'; // 布局配置
-import { addProduct, getCategory,getProductInfo,putProduct} from '@/services/ganfanhun';
+import { getTreeCategory, getCategory,getProductInfo,putProduct} from '@/services/ganfanhun';
 import ProForm, { ProFormSelect , ProFormText , ProFormList, ProFormDigit, ProFormTextArea } from '@ant-design/pro-form';
 
 
@@ -95,7 +95,6 @@ const recursiveChildren = async (targetOption:any,ids:any,i:number) => {
   }
   return targetOption;
 }
-   
 
 
 
@@ -120,8 +119,12 @@ const ProductAdd  = () => {
   /** 图片列表列 */
   const [uploadFileList,setUploadFileList] = useState<FileList[]>([]);
 
+  /** 初始化完成 */
+  // const [init,setInIt] = useState<boolean>(false)
 
+  /** 数组*/
 
+  const [keyInArr,setKeyInArr] = useState<any>()
 
 
   /** 表单对象 */
@@ -129,29 +132,61 @@ const ProductAdd  = () => {
 
   /** 钩子函数 */
   useEffect(()=>{
-    //获取分类
-    getCategory({
-      parentId:'0'
-    }).then((result)=>{
-      const {data} = result;
-      const _options =  getCascader(data,false)
-      setOptions([..._options])
-    })  
-  },[])
-
-  useEffect(()=>{
+    // //获取分类
+    // getCategory({
+    //   parentId:'0'
+    // }).then((result)=>{
+    //   const {data} = result;
+    //   const _options =  getCascader(data,false)
+    //   setOptions([..._options])
+    //   // setInIt(true)
+    // })
     const id = history?.location.query?.id?.toString()
-    //获取商品
-    getProductInfo(id).then((result)=>{
-      console.log(result.data)
-      form.setFieldsValue(result.data)
-      const imageList = formatImageList(result.data?.imageList)
-      setUploadFileList(imageList)
-      //cascaderChild(result.data?.categoryId)
-    })
+    // //获取商品
+    // getProductInfo(id).then((result)=>{
+    //   console.log(result.data)
+    //   form.setFieldsValue(result.data)
+    //   const imageList = formatImageList(result.data?.imageList)
+    //   setUploadFileList(imageList)
+    //   setKeyInArr(result.data?.categoryId)
+    // })
+    init(id) 
+
   },[])
 
+    /** 钩子函数 */
+    useEffect(()=>{
+      // //获取分类子叶
+      // getTreeCategory({keyInArr:keyInArr}).then((res)=>{
+      //   console.log("返回值 getTreeCategory===>",res)
+      //   let _options = options;
+      //   console.log("Hooks数据getTreeCategory===>",_options,options)
+      //   console.log(res[0])
+      //   let index = _options.findIndex((item:any)=>item.value===res[0]?.value)
+      //   console.log("index -- getTreeCategory===>",index)
+      //   _options[index] = res[0];
+      //   // console.log("getTreeCategory===>",_options,options)
+      //   setOptions([..._options]);
+      // }) 
 
+    },[keyInArr])
+
+  const init = async (id:any)=>{
+      //获取分类
+    const {data} = await getCategory({parentId:'0'})
+    const _options =  getCascader(data,false)
+    //获取商品
+    const result =  await getProductInfo(id)
+    form.setFieldsValue(result.data)
+    const imageList = formatImageList(result.data?.imageList)
+    setUploadFileList(imageList)
+    setKeyInArr(result.data?.categoryId)
+   const res  = await getTreeCategory({keyInArr:result.data?.categoryId})
+    let index = _options.findIndex((item:any)=>item.value===res[0]?.value)
+    _options[index] = res[0];
+    setOptions([..._options]); 
+  }
+     
 
 	/** 点击第一级选项时 触发 selecedOptions 是对应点击项 */
   const onChange = (value:any, selectedOptions:any) => {

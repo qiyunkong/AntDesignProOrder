@@ -49,9 +49,9 @@ const CategoryList: React.FC = () => {
 
   /** 生命周期函数 */
   useEffect(()=>{
-    
 
-  })
+
+  },[])
 
 
 

@@ -48,3 +48,13 @@ export async function delCategory(params:{}, options?: { [key: string]: any }){
     })
 }
 
+/** 获取Tree结构分类 GET /api/tree/category */
+export async function getTreeCategory(params:any,options?: { [key: string]: any }){
+    return request('/api/category/tree/category',{
+        method:'GET',
+        params:{
+            ...params
+        },
+        ...(options || {}),
+    })
+}
