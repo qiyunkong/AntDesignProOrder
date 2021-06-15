@@ -48,3 +48,26 @@ export async function delSchema(params:{}, options?: { [key: string]: any }){
     })
 }
 
+
+/** 拉取模型机甲的接口函数 GET /api/model */
+export async function getSchemaDva(params:{},Dva:string, options?: { [key: string]: any }){
+    return request(`/api/model/${Dva}`,{
+        method:'GET',
+        params:{
+            ...params
+        },
+        ...(options || {}),
+    })
+}
+
+/** 添加模型机甲的接口函数 GET /api/model */
+export async function addSchemaDva(body:any, Dva:string,options?: { [key: string]: any }){
+    console.log(body)
+    return request(`/api/model/${Dva}`,{
+        method:'POST',
+        data:body,
+        ...(options || {}),
+    })
+}
+
+

@@ -63,6 +63,8 @@
 
 20. 网站刷新右侧菜单不高亮BUG
 
+21. (动态路由)[https://www.cnblogs.com/MrZhujl/p/13331116.html]
+
 ## 项目结构
 
 ## 项目问题
@@ -152,7 +154,7 @@ ant design pro  IP 端口修改
 
 ```json
 ipconfig  WLAN IP 
-"start": "cross-env UMI_ENV=dev umi dev --HOST=192.168.1.100",
+"start": "cross-env UMI_ENV=dev umi dev --HOST=10.12.249.0",
 
 ```
 
@@ -183,6 +185,18 @@ ipconfig  WLAN IP
 核心动态模型开发参考案例
 
 
+
+//https://www.cnblogs.com/guapitomjoy/p/12044141.html 小程序本地存储
+
+小程序点击两次商品会添加两次
+
+项目正常：
+
+1. 商品批量删除正常
+2. 分类批量删除正常
+3. 分类查询操作正常
+4. 商品添加操作正常   /  没有跳转列表页面
+5. 修改
 
 ​	
 

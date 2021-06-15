@@ -287,7 +287,7 @@ const ProductAdd  = () => {
           name="name"
           rules={[{required:true,message:'请填写商品名称'}]}
         />
-        <ProFormDigit label="商品价格" name="price" min={1} max={10} />
+        <ProFormDigit label="商品价格" name="price" min={1} max={100} />
         <Form.Item
           label='商品分类'
           name="categoryId"
@@ -337,9 +337,9 @@ const ProductAdd  = () => {
           }}
           value={uploadFileList}
           name="imageList"
-          label="网站图标"
+          label="商品图片"
           max={3}
-          title="logo上传"
+          title="商品图片上传"
         />
         <ProFormTextArea
           label="商品描述"

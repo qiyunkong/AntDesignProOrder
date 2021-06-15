@@ -210,9 +210,9 @@ const ProductAdd  = () => {
           }}
           value={uploadFileList}
           name="imageList"
-          label="网站图标"
+          label="商品图片"
           max={3}
-          title="logo上传"
+          title="商品图片上传"
         />
         <ProFormTextArea
           label="商品描述"

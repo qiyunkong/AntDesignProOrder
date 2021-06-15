@@ -15,7 +15,6 @@ const defaultData: TableSourceType[] = new Array(1).fill(1).map((_, index) => {
     type:'String',
     required:'true',
     search:'false',
-    valueType:'input',
     dataIndex: 'name',
     decs: '请填写字段的描述',
     id: (Date.now() + index).toString(),

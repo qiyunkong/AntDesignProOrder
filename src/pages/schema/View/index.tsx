@@ -11,6 +11,7 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import {getCategory,delCategory} from '@/services/ganfanhun';
 import { useEffect } from 'react';
+import {getSchemaDva,addSchemaDva} from '@/services/ganfanhun';
 
 
 
@@ -37,7 +38,7 @@ const handleRemove = async (selectedRows: CategoryListItem[]) => {
 };
 
 
-const CategoryList: React.FC = () => {
+const SchemaList: React.FC = (props:any) => {
   /** 删除的弹框 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 方法标记 */
@@ -45,12 +46,23 @@ const CategoryList: React.FC = () => {
   /** 标记现选择的行 */
   const [currentRow, setCurrentRow] = useState<CategoryListItem>();
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
-
+  /** 动态路由 */
+  const [params,setParams] = useState<string>()
 
   /** 生命周期函数 */
+  //生命周期
   useEffect(()=>{
-
-
+    //1.获取动态路由参数
+    const {view} = props.match.params
+    setParams(view)
+    // console.log(view, props.match.params)
+    //2.获取表单模型
+    getSchemaDva({},view).then((res:any)=>{
+      console.log("===>",res)
+      setColumns(res?.columnsForm)
+    })
+    //3.渲染模型
+    
   },[])
 
 
@@ -176,4 +188,4 @@ const CategoryList: React.FC = () => {
   );
 };
 
-export default CategoryList;
+export default SchemaList;

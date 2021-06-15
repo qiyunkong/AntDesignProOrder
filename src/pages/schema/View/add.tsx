@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import {message} from 'antd';
 import ProCard from '@ant-design/pro-card';
+import React, { useState ,useEffect} from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import { BetaSchemaForm } from '@ant-design/pro-form';
+import {getSchemaDva,addSchemaDva} from '@/services/ganfanhun';
 import type { ProFormColumnsType, ProFormLayoutType } from '@ant-design/pro-form';
-import { BetaSchemaForm, ProFormSelect } from '@ant-design/pro-form';
 
 const valueEnum = {
   all: { text: '全部', status: 'Default' },
@@ -26,139 +28,29 @@ type DataItem = {
   state: string;
 };
 
-const columns: ProFormColumnsType<DataItem>[] = [
-  {
-    title: '标题',
-    dataIndex: 'title',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    },
-    width: 'm',
-  },
-  {
-    title: '状态',
-    dataIndex: 'state',
-    valueType: 'select',
-    valueEnum,
-    width: 'm',
-  },
-  {
-    title: '标签',
-    dataIndex: 'labels',
-    width: 'm',
-  },
-  {
-    title: '创建时间',
-    key: 'showTime',
-    dataIndex: 'createName',
-    valueType: 'date',
-  },
-  {
-    title: '分组',
-    valueType: 'group',
-    columns: [
-      {
-        title: '状态',
-        dataIndex: 'groupState',
-        valueType: 'select',
-        width: 'xs',
-        valueEnum,
-      },
-      {
-        title: '标题',
-        width: 'md',
-        dataIndex: 'groupTitle',
-        formItemProps: {
-          rules: [
-            {
-              required: true,
-              message: '此项为必填项',
-            },
-          ],
-        },
-      },
-    ],
-  },
-  {
-    title: '列表',
-    valueType: 'formList',
-    dataIndex: 'list',
-    initialValue: [{ state: 'all', title: '标题' }],
-    columns: [
-      {
-        valueType: 'group',
-        columns: [
-          {
-            title: '状态',
-            dataIndex: 'state',
-            valueType: 'select',
-            width: 'xs',
-            valueEnum,
-          },
-          {
-            title: '标题',
-            dataIndex: 'title',
-            formItemProps: {
-              rules: [
-                {
-                  required: true,
-                  message: '此项为必填项',
-                },
-              ],
-            },
-            width: 'm',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'FormSet',
-    valueType: 'formSet',
-    dataIndex: 'formSet',
-    columns: [
-      {
-        title: '状态',
-        dataIndex: 'groupState',
-        valueType: 'select',
-        width: 'xs',
-        valueEnum,
-      },
-      {
-        title: '标题',
-        dataIndex: 'groupTitle',
-        tip: '标题过长会自动收缩',
-        formItemProps: {
-          rules: [
-            {
-              required: true,
-              message: '此项为必填项',
-            },
-          ],
-        },
-        width: 'm',
-      },
-    ],
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    valueType: 'dateRange',
-    transform: (value) => {
-      return {
-        startTime: value[0],
-        endTime: value[1],
-      };
-    },
-  },
-];
 
-export default () => {
+
+export default (props:any) => {
+  // const columns: ProFormColumnsType<DataItem>[] = [];
+  const [columns,setColumns] = useState<ProFormColumnsType<DataItem>[]>([])
+
+  const [params,setParams] = useState<string>()
+
+  //生命周期
+  useEffect(()=>{
+    //1.获取动态路由参数
+    const {view} = props.match.params
+    setParams(view)
+    // console.log(view, props.match.params)
+    //2.获取表单模型
+    getSchemaDva({},view).then((res:any)=>{
+      console.log("===>",res)
+      setColumns(res?.columnsForm)
+    })
+    //3.渲染模型
+    
+  },[])
+
   const [layoutType, setLayoutType] = useState<ProFormLayoutType>('Form');
   return (
      <PageContainer>
@@ -167,8 +59,17 @@ export default () => {
             trigger={<a>点击我</a>}
             layoutType={layoutType}
             onFinish={async (values) => {
-                //绑定模型添加的 api
-                console.log(values);
+                const hide = message.loading('正在添加');
+                try {
+                  const {data} =  await addSchemaDva(values,params as string);
+                  hide();
+                  message.success('添加成功');
+                  console.log(data);
+                } catch (error) {
+                  hide();
+                  message.error('添加失败请重试！');
+                }
+
             }}
             columns={columns}
         />
