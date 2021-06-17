@@ -1,5 +1,8 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
-
+import { useModel } from 'umi';
+// const { setInitialState } = useModel('@@initialState');
+// const {appSettings} = setInitialState
+// const logo = `${appSettings.staticSrc}${appSettings.logo}`
 const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
@@ -13,7 +16,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: '干饭庄平台',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'http://192.168.19.1:8000/logo.svg',
   iconfontUrl: '',
   menu: {
     locale: false,

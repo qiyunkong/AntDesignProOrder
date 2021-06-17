@@ -1,5 +1,6 @@
 import {  FormattedMessage } from 'umi';
 import ProCard from '@ant-design/pro-card';
+import useRouter from '@/hooks/useRouter';
 import ProTable from '@ant-design/pro-table';
 import {CategoryListItem, IPage} from '@/types'
 import { PlusOutlined } from '@ant-design/icons';
@@ -48,29 +49,10 @@ const SchemaList: React.FC = (props:any) => {
   const [selectedRowsState, setSelectedRows] = useState<CategoryListItem[]>([]);
   /** 动态路由 */
   const [params,setParams] = useState<string>()
-
-  /** 生命周期函数 */
-  //生命周期
-  useEffect(()=>{
-    //1.获取动态路由参数
-    const {view} = props.match.params
-    setParams(view)
-    // console.log(view, props.match.params)
-    //2.获取表单模型
-    getSchemaDva({},view).then((res:any)=>{
-      console.log("===>",res)
-      setColumns(res?.columnsForm)
-    })
-    //3.渲染模型
-    
-  },[])
-
-
-
-
-
-  /** 表格规格数据 */
-  const columns: ProColumns[] = [
+  /** 数据 */
+  const [dataSource,setDataSource] = useState()
+  /** 表结构 */
+  const [columns,setColumns] = useState<ProColumns[]>( [
     {
       title: "操作",
       dataIndex: 'option',
@@ -85,15 +67,58 @@ const SchemaList: React.FC = (props:any) => {
          更新
         </a>,
       ],
-    },
+  }])
 
-  ];
+  const router = useRouter();
+  /** 生命周期函数 */
+  //生命周期
+  useEffect(()=>{
+    //1.获取动态路由参数
+    const {view} = props.match.params
+    setParams(view)
+    // console.log(view, props.match.params)
+    //2.获取表单模型
+    getSchemaDva({},view).then((res:any)=>{
+      console.log(res?.columnsTable)
+      setColumns([
+        ...res?.columnsTable,
+        ...columns
+      ])
+      setDataSource(res?.data)
+    })
+    //3.渲染模型
+    
+  },[])
+
+
+
+
+
+  /** 表格规格数据 */
+  // const columns: ProColumns[] = [
+  //   {
+  //     title: "操作",
+  //     dataIndex: 'option',
+  //     valueType: 'option',
+  //     render: (_, record) => [
+  //       <a
+  //         key="config"
+  //         onClick={() => {
+  //          console.log("页面跳转")
+  //         }}
+  //       >
+  //        更新
+  //       </a>,
+  //     ],
+  //   },
+
+  // ];
+
 
 
 
   return (
     <PageContainer>
-      
       <ProTable
         headerTitle='查询表格'
         actionRef={actionRef}
@@ -107,14 +132,16 @@ const SchemaList: React.FC = (props:any) => {
             key="primary"
             onClick={() => {
               //条件到模型页面
-              console.log("链接跳转")
+              //console.log("链接跳转")
+              router.loadPage(`/schema/${params}/Add`)
+
             }}
           >
             <PlusOutlined /> 新建数据
           </Button>,
         ]}
-        request={getCategory}
         columns={columns}
+        dataSource={dataSource}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);

@@ -1,4 +1,4 @@
-import { Button,message} from 'antd';
+import { Button,message,Form} from 'antd';
 import React,{useState,useRef} from 'react';
 import {UserListItem} from '@/types';
 import ProTable from '@ant-design/pro-table';
@@ -6,7 +6,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import {getUser,getRole,addUser,delUser,putUser} from '@/services/ganfanhun';
 import type { ProColumns , ActionType} from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-form';
-import { constant, result } from 'lodash';
+
 
 export const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -100,65 +100,79 @@ const handleRemove = async (selectedRows: UserListItem[]) => {
 
 
 
-const columns: ProColumns<UserListItem>[] = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    valueType: 'index',
-  },
-  {
-    //用户表头编写
-    title: '昵称',
-    dataIndex: 'nickName',
-    search: false
-  },
-  {
-    title: '邮箱',
-    dataIndex: 'email',
-  },
-  {
-    title: '手机号',
-    dataIndex: 'phome',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    search: false
-  },
-  {
-    title: '角色',
-    dataIndex: 'roleName',
-  },
-  {
-    title: '操作',
-    key: 'option',
-    width: 120,
-    valueType: 'option',
-    render: (_, row, index, action) => [
-      <a
-        key="a"
-        onClick={() => {
-        }}
-      >
-        编辑
-      </a>,
-        <a
-        key="a"
-        onClick={() => {
-        }}
-      >
-        删除
-      </a>,
-    ],
-  },
-];
-
-
 const UserListPage:React.FC = () => {
     /** 新建窗口的弹窗 */
     const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+    /** 更新窗口的弹窗 */
+    const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
     /** 方法标记 */
     const actionRef = useRef<ActionType>();
+
+    //表单对象
+    const [formUpdate] = Form.useForm();
+    const [formAuthor] = Form.useForm();
+
+    /** */
+    const columns: ProColumns<UserListItem>[] = [
+      {
+        title: '序号',
+        dataIndex: 'index',
+        valueType: 'index',
+      },
+      {
+        //用户表头编写
+        title: '昵称',
+        dataIndex: 'nickName',
+        search: false
+      },
+      {
+        title: '邮箱',
+        dataIndex: 'email',
+      },
+      {
+        title: '图片',
+        dataIndex: 'avatar',
+        key: 'image',
+        valueType: 'image',
+        search:false,
+        renderText: (val:any) =>{
+          return  `http://127.0.0.1:3001${val}`
+        }
+    
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        search: false
+      },
+      {
+        title: '角色',
+        dataIndex: 'roleName',
+      },
+      {
+        title: '操作',
+        key: 'option',
+        width: 120,
+        valueType: 'option',
+        render: (_, row, index, action) => [
+          <a
+            key="a"
+            onClick={() => {
+              handleModalVisible(true);
+            }}
+          >
+            编辑
+          </a>,
+            <a
+            key="a"
+            onClick={() => {
+            }}
+          >
+            删除
+          </a>,
+        ],
+      },
+    ];
 
 
   return (

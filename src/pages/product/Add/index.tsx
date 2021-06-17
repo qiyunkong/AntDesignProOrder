@@ -4,7 +4,7 @@ import ImageUpload from './components/ImageUpload';
 import { message, Form, Cascader,Space} from 'antd';
 import { CategoryListItem, CascaderItem } from '@/types';
 import { PageHeaderWrapper } from '@ant-design/pro-layout'; // 布局配置
-import { addProduct, getCategory} from '@/services/ganfanhun';
+import { addProduct, getCategory,getTag} from '@/services/ganfanhun';
 import ProForm, { ProFormSelect , ProFormText , ProFormList, ProFormDigit, ProFormTextArea } from '@ant-design/pro-form';
 
 
@@ -96,6 +96,16 @@ const ProductAdd  = () => {
       const {data} = result;
       const _options =  getCascader(data,false)
       setOptions([..._options])
+    })
+    getTag({}).then(({data})=>{
+      let _tags = data.map(({name})=>{
+        return {label:name,value:name}
+      })
+      let _spcsList = spcsList;
+      _spcsList.tags = _tags;
+      setspcsList(_spcsList)
+
+      
     })
   },[])
 

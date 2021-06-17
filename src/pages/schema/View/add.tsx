@@ -1,4 +1,5 @@
 import {message} from 'antd';
+import useRouter from '@/hooks/useRouter';
 import ProCard from '@ant-design/pro-card';
 import React, { useState ,useEffect} from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -34,7 +35,11 @@ export default (props:any) => {
   // const columns: ProFormColumnsType<DataItem>[] = [];
   const [columns,setColumns] = useState<ProFormColumnsType<DataItem>[]>([])
 
+  //动态路由
   const [params,setParams] = useState<string>()
+
+  //使用
+  const router = useRouter();
 
   //生命周期
   useEffect(()=>{
@@ -64,6 +69,7 @@ export default (props:any) => {
                   const {data} =  await addSchemaDva(values,params as string);
                   hide();
                   message.success('添加成功');
+                  router.loadPage(`/schema/${params}`)
                   console.log(data);
                 } catch (error) {
                   hide();
